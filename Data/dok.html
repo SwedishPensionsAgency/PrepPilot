@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+  <meta charset="utf-8" />
+  
+  <TITLE> Kolumndatabas för premiepensionen </TITLE>
+  </head>
+  
+  <body>
+  <h1> Allmänt </h1>
+  <p> Databasen är skapad med programmet R och sedan nedsparad i Coldbir-format.
+Källan till data är premiepensionsdatabasen PLUTO. Varje rad i databasen motsvarar ett konto,
+övriga kolumner är i sin tur kopplade mot denna kontokolumn.
+Varje variabel har en tidsdimension; år, månad, dag eller statisk.
+Tidsdimensionen avser alltid den sista dagen, i månaden respektive året.
+Sedan följer en beskrivning av data samt en källangivelse som visar var data är hämtat ifrån.</p>
+  
+  <b> Struktur: </b> <br>
+  VARIABELNAMN [TIDSDIMENSION]
+<ul>
+  <ui> <i>Beskrivning: </i> </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  
+  <h1> Variabelöversikt</h1>
+  <p><A href="#ANTAL_FONDVAL"> ANTAL_FONDVAL [ÅR] </A> </p>
+  <p><A href="#FODAR"> FODAR [STATISK] </A> </p>
+  <p><A href="#FONDPLACERINGSAR"> FONDPLACERINGSAR [STATISK] </A> </p>
+  <p><A href="#GARANTBLP"> GARANTBLP [ÅR] </A> </p>
+  <p><A href="#INTE_DOD"> INTE_DOD [ÅR] </A> </p>
+  <p><A href="#INTE_DOD_AGARE"> INTE_DOD_AGARE [ÅR] </A> </p>
+  <p><A href="#INTJANANDEAR"> INTJANANDEAR [STATISKT] </A> </p>
+  <p><A href="#INTRADESAR"> INTRADESAR [STATISKT] </A> </p>
+  <p><A href="#IRR"> IRR [ÅR] </A> </p>
+  <p><A href="#KONTOVARDE"> KONTOVARDE [ÅR] </A> </p>
+  <p><A href="#LAN"> LAN [ÅR] </A> </p>
+  <p><A href="#MONAMT"> MONAMT [ÅR] </A> </p>
+  <p><A href="#OVERFORTKONTO"> OVERFORTKONTO [ÅR] </A> </p>
+  <p><A href="#PEDALID"> PEDALID [STATISK] </A> </p>
+  <p><A href="#PRATT"> PRATT [ÅR] </A> </p>
+  <p><A href="#PRATT_ANDRAD"> PRATT_ANDRAD [ÅR] </A> </p>
+  <p><A href="#PRDCOD"> PRDCOD [ÅR] </A> </p>
+  <p><A href="#RANTA"> RANTA [ÅR] </A> </p>
+  <p><A href="#RSPPEDALID"> RSPPEDALID [ÅR] </A> </p>
+  <p><A href="#SEX"> SEX [STATISK] </A> </p>
+  <p><A href="#TILLBLP"> TILLBLP [ÅR] </A> </p>
+  <p><A href="#WDRPCT"> WDRPCT [ÅR] </A> </p>
+  
+  <h1> Variabelförklaring</h1>
+  
+  <p><A name="ANTAL_FONDVAL"> ANTAL_FONDVAL [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Variabeln anger hur många aktiva val som genomförts för kontot under året.</ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="FODAR"> FODAR [STATISK] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger ursprungsägarens födelseår. </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="FONDPLACERINGSAR"> FONDPLACERINGSAR [STATISK] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger vilket år de första pensionsrätterna placerades i fonder. </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="GARANTBLP"> GARANTBLP [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger det garanterade beloppet i traditionell försäkring. </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="INTE_DOD"> INTE_DOD [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger om ursprungsägaren av kontot lever. </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="INTE_DOD_AGARE"> INTE_DOD_AGARE [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger om nuvarande kontoägaren lever. </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="INTJANANDEAR"> INTJANANDEAR [STATISK] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger det första intjänandeåret. </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="INTRADESAR"> INTRADESAR [STATISK] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger fastställandeåret för de första intjänade pensionsrätterna,
+det vill säga det år då pensionsrätterna lästes in i PLUTO. </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="IRR"> IRR [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Internräntan från start. </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="KONTOVARDE"> KONTOVARDE [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Kontovärde är summan av det totala värdet av fondtillgångarna och det totala värdet av likvidkontot exklusive lån. (Kan vara ett negativt värde)  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="LAN"> LAN [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Om kontot har ett negativt värde utfärdas ett lån så att totalsumman ska bli större eller lika med 0 kr för kontot.  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="MONAMT"> MONAMT [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger det månatliga beloppet för pensionärer.  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="OVERFORTKONTO"> OVERFORTKONTO [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> En dummy-variabel som anger ifall kontot är överfört (1 = överfört, 0 = ej överfört).  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="PEDALID"> PEDALID [STATISK] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Kontonyckeln som övriga data är kopplad mot.  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="PRATT"> PRATT [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger totalbeloppet för ordinära pensionsrätter.  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="PRATT_ANDRAD"> PRATT_ANDRAD [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger totalbeloppet för ändrade pensionsrätter.  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="PRDCOD"> PRDCOD [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger vilken produktkod kontot har.  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="RANTA"> RANTA [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger vilken produktkod kontot har.  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="RSPPEDALID"> RSPPEDALID [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger den nuvarande kontoägaren.  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="SEX"> SEX [STATISK] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> En dummyvariabel som anger ifall det är en man (1) eller en kvinna (0).  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="TILLBLP"> TILLBLP  [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> Anger tilläggsbeloppet.  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  <p><A name="WDRPCT"> WDRPCT  [ÅR] </A> </p>
+  <ul>
+  <ui> <i>Beskrivning:  </i> WDRPCT = Withdrawal percent, anger uttagsnivån (0, 25, 50, 75, 100).  </ui> <br>
+  <ui> <i>Källa: </i> </ui>  <br>
+  </ul>
+  
+  </body>
+  
+  </html>
