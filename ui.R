@@ -2,22 +2,29 @@
 
 library(shiny)
 
-shinyUI(fluidPage(
+# Define UI for application that draws a histogram
+shinyUI(navbarPage(
+  "Premiepensionen",
   
-  # Application title
-  headerPanel("New Application"),
-  
-  # Sidebar with a slider input for number of observations
-  sidebarPanel(
-    sliderInput("obs", 
-                "Number of observations:", 
-                min = 1, 
-                max = 1000, 
-                value = 500)
+  ## First plot ----
+  tabPanel(
+    "Plot1",
+    fluidRow(
+      column(3),
+      column(6, plotOutput("distPlot")),
+      column(3)
+    )
   ),
   
-  # Show a plot of the generated distribution
-  mainPanel(
-    plotOutput("distPlot")
+  ## Second plot ----
+  tabPanel(
+    "Plot2"
+  ),
+  
+  ## Menu ----
+  navbarMenu(
+    "Menu!",
+    tabPanel("Stuff1"),
+    tabPanel("Stuff2")
   )
 ))

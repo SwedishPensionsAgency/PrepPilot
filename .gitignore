@@ -10,3 +10,10 @@
 
 # User-specific project files
 .Rproj.user
+
+# OSX system files
+.DS_Store
+
+## DATA
+*.gz
+*.cdb
