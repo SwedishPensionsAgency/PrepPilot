@@ -3,53 +3,172 @@
 library(shiny)
 
 # Define UI for application that draws a histogram
-shinyUI(navbarPage(
-  "Premiepensionen",
-  
-  ## First plot ----
-  tabPanel(
-    "Plot1",
-    fluidRow(
-      column(1),
-      column(
-        3,
-        selectizeInput(
-          "variable",
-          "Variabel (y-axel)",
-          choices = c(
-            "Internr\u00E4nta" = "IRR",
-            "Kontov\u00E4rde" = "KONTOVARDE"
+shinyUI(
+  navbarPage(
+    "Premiepensionen",
+    
+    tags$head(tags$style("#controls {
+              /* Appearance */
+                background-color: white;
+                padding: 0 20px 20px 20px;
+                cursor: move;
+              /* Fade out while not hovering */
+                opacity: 0.55;
+                zoom: 0.9;
+                transition: opacity 300ms 0.8s;
+              }
+              #controls:hover {
+              /* Fade in while hovering */
+                opacity: 0.95;
+              transition-delay: 0;
+            }")),
+    
+    tabPanel("Start"),
+    
+    ## Kontoutveckling ----
+    navbarMenu(
+      "Kontoutveckling",
+      
+      ## > Fördelning, individuella konton ----
+      tabPanel(
+        "Fördelning, individuella konton",
+        fluidRow(
+          column(3),
+          column(
+            6,
+            plotOutput("distPlot")
           ),
-          selected = "IRR"
+          column(3)
         ),
-        sliderInput(
-          "bins",
-          "Antal staplar (x-axel)",
-          
-          # Formatting
-          min = 10, max = 500, step = 10, format = "##", locale = "se", ticks = FALSE,
-          
-          # Initial value
-          value = 20
+        fluidRow(
+          column(3),
+          column(2,
+                 select2Input(
+                   "variable",
+                   "Variabel (y-axel)",
+                   choices = c(
+                     "Internränta" = "IRR",
+                     "Kontovärde" = "KONTOVARDE",
+                     "Garanterat belopp" = "GARANTBLP",
+                     "Månatligt belopp" = "MONAMT"
+                   ),
+                   selected = "IRR",
+                   selectize = FALSE
+                 )
+          ),
+          column(2,
+                 sliderInput(
+                   "bins",
+                   "Upplösning (x-axel)",
+                   
+                   # Formatting
+                   min = 1, max = 11, step = 1, format = "##", locale = "se", ticks = FALSE,
+                   animate = TRUE,
+                   
+                   # Initial value
+                   value = 2
+                 )
+          ),
+          column(2,
+                 sliderInput(
+                   "year",
+                   "År",
+                   
+                   # Formatting
+                   # Formatting
+                   min = 2000, max = 2013, step = 1, format = "####", locale = "se", ticks = FALSE,
+                   animate = TRUE,
+                   
+                   # Initial value
+                   value = 2010
+                 )
+          ),
+          column(3)
         )
       ),
-      column(
-        6,
-        plotOutput("distPlot")
+      
+      
+      ## > Interaktivt, individuella konton ----
+      tabPanel(
+        "Datautforskare, individuella konton",
+        
+        # Flytande kontrollpanel
+          absolutePanel(
+            id = "controls", class = "modal", 
+            fixed = TRUE, 
+            # draggable = TRUE,
+            top = 60, left = "auto", right = 20, bottom = "auto",
+            width = 330, height = "auto",
+            
+            h2("Skärningar av data", style="font-family: 'Helvetica Neue', Helvetica; font-weight: 300"),
+            
+            fluidRow(
+              column(
+                6,
+                checkboxGroupInput("chbSEX", "Kön", c("Kvinnor" = 0, "Män" = 1), selected = c(0))
+              ),
+              column(
+                6,
+                checkboxGroupInput("chbINTE_DOD_AGARE", "Levandestatus (ägare)", c("Levande", "Döda"), selected = c("Levande", "Döda"))
+              )
+            ),
+            fluidRow(
+              column(
+                6,
+                selectInput(
+                  "selINTJANANDEAR", "Första intjänandeår",
+                  choices = c(1995:2010),
+                  multiple = TRUE, selectize = TRUE
+                )
+              ),
+              column(
+                6,
+                selectInput(
+                  "selFODAR", "Födelseår",
+                  choices = 1914:2012,
+                  multiple = TRUE, selectize = TRUE
+                )
+              )
+            )
+          ),
+        
+        column(3),
+        column(
+          2
+        ),
+        column(
+          2
+        ),
+        column(
+          2
+        ),
+        column(3)
       ),
-      column(3)
+      
+      
+      ## > Tabeller ----
+      tabPanel("Tabeller")
+    ),
+    
+    ## Fondrörelsen ----
+    navbarMenu(
+      "Fondrörelsen",
+      
+      ## > Värdeutveckling per kalenderår ----
+      tabPanel("Värdeutveckling per kalenderår"),
+      
+      ## > Tidsserier ----
+      tabPanel("Tidsserier"),
+      
+      ## > Tabeller ----
+      tabPanel("Tabeller")
+    ),
+    
+    ## Menu ----
+    navbarMenu(
+      "Om applikationen",
+      tabPanel("Data"),
+      tabPanel("Licens"),
+      tabPanel("Källkod")
     )
-  ),
-  
-  ## Second plot ----
-  tabPanel(
-    "Plot2"
-  ),
-  
-  ## Menu ----
-  navbarMenu(
-    "Menu!",
-    tabPanel("Stuff1"),
-    tabPanel("Stuff2")
-  )
-))
+  ))
