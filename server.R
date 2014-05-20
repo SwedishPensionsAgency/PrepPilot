@@ -3,22 +3,36 @@ library(shiny)
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
   
-  prepData <- reactive({
-    base_data$xvar <- prepDB[input$variable, 2012]
+  ## Kontoutveckling ----
+  
+  ## > Fördelning, individuella konton ----
+  distData <- reactive({
+    data <- prepDB[input$variable, input$year][[1]]
     
-    return(base_data)
+    return(data)
   })
   
-  
   output$distPlot <- renderPlot({
-    data = prepData()
-    x    <- data$xvar
+    x <- distData()
     x <- x[!is.na(x)]
     x <- x[x < quantile(x, 0.99) & x > quantile(x, 0.01)] #Trim off outlier data
     
-    bins <- seq(min(x, na.rm = TRUE), max(x, na.rm = TRUE), length.out = input$bins + 1)
+    bins <- seq(min(x), max(x),
+                length.out = ifelse(input$bins < 11, ceiling(exp(input$bins+0.5)/((input$bins-1)^2 + 1)), 10000))
     
     # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'skyblue', border = 'white')
+    hist(x, breaks = bins, col = 'skyblue', border = ifelse(length(bins) < 100, 'white', 'skyblue'))
+    
+  })
+  
+  
+  ## > Interaktivt, individuella konton ----
+  indData <- reactive({
+    input$chbSEX
+#     browser()
+  })
+  
+  output$indPlot <- renderPlot({
+    plotdata <- indData()
   })
 })

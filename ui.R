@@ -53,7 +53,7 @@ shinyUI(
                      "Månatligt belopp" = "MONAMT"
                    ),
                    selected = "IRR",
-                   selectize = FALSE
+                   selectize = TRUE
                  )
           ),
           column(2,
@@ -105,11 +105,11 @@ shinyUI(
             fluidRow(
               column(
                 6,
-                checkboxGroupInput("chbSEX", "Kön", c("Kvinnor" = 0, "Män" = 1), selected = c(0))
+                checkboxGroupInput("chbSEX", "Kön", c("Kvinnor" = 0, "Män" = 1), selected = c(0, 1))
               ),
               column(
                 6,
-                checkboxGroupInput("chbINTE_DOD_AGARE", "Levandestatus (ägare)", c("Levande", "Döda"), selected = c("Levande", "Döda"))
+                checkboxGroupInput("chbINTE_DOD_AGARE", "Levandestatus (ägare)", c("Levande" = 1, "Döda" = 0), selected = c(1))
               )
             ),
             fluidRow(
@@ -126,7 +126,38 @@ shinyUI(
                 selectInput(
                   "selFODAR", "Födelseår",
                   choices = 1914:2012,
-                  multiple = TRUE, selectize = TRUE
+                  selectize = TRUE
+                )
+              )
+            ),
+            hr(),
+            fluidRow(
+              column(
+                6,
+                selectInput(
+                  "selXvar", "Primärvariabel",
+                  choices = c(
+                    "Internränta" = "IRR",
+                    "Kontovärde" = "KONTOVARDE",
+                    "Garanterat belopp" = "GARANTBLP",
+                    "Månatligt belopp" = "MONAMT"
+                  ),
+                  selected = "IRR",
+                  selectize = TRUE
+                )
+              ),
+              column(
+                6,
+                selectInput(
+                  "selYvar", "Sekundärvariabel",
+                  choices = c(
+                    "Internränta" = "IRR",
+                    "Kontovärde" = "KONTOVARDE",
+                    "Garanterat belopp" = "GARANTBLP",
+                    "Månatligt belopp" = "MONAMT"
+                  ),
+                  selected = "MONAMT",
+                  selectize = TRUE
                 )
               )
             )
@@ -134,13 +165,8 @@ shinyUI(
         
         column(3),
         column(
-          2
-        ),
-        column(
-          2
-        ),
-        column(
-          2
+          6,
+          plotOutput("indPlot")
         ),
         column(3)
       ),
