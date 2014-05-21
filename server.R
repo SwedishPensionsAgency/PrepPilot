@@ -29,10 +29,29 @@ shinyServer(function(input, output) {
   ## > Interaktivt, individuella konton ----
   indData <- reactive({
     input$chbSEX
-#     browser()
   })
   
   output$indPlot <- renderPlot({
     plotdata <- indData()
+  })
+  
+  
+  ## Fondrörelsen ----
+  
+  ## > Värdeutveckling per kalenderår ----
+  output$fndTimeSeries <- renderChart2({
+    plotdata <- copy(ppindex)
+    
+    pr1 <- nPlot(PPINDEX ~ UPDEDT, data = plotdata, type = "lineChart")
+    pr1$xAxis(
+      tickFormat = "#!function(d) {return d3.time.format('%Y-%m-%d')(new Date(d * 24 * 60 * 60 * 1000));}!#"
+    )
+    pr1$layer(PPINDEX ~ UPDEDT, data = plotdata, type = "multiBarChart")
+    
+    return(pr1)
+    
+    #     hair_eye_male <- subset(as.data.frame(HairEyeColor), Sex == "Male")
+    #     n1 <- nPlot(Freq ~ Hair, group = "Eye", data = hair_eye_male, type = "multiBarChart")
+    #     return(n1)
   })
 })
