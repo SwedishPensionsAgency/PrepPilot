@@ -204,7 +204,15 @@ shinyUI(
       "Fondrörelsen",
       
       ## > Värdeutveckling per kalenderår ----
-      tabPanel("Värdeutveckling per kalenderår"),
+      tabPanel(
+        "Värdeutveckling per kalenderår",
+        fluidRow(
+          column(3),
+          column(6, showOutput("fndTimeSeries","nvd3")),
+          column(3)
+        )
+        
+      ),
       
       ## > Tidsserier ----
       tabPanel("Tidsserier"),

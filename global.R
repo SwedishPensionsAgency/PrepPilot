@@ -6,8 +6,8 @@ require(Coldbir) # >= 0.5
 require(data.table) # >= 1.9.2¨
 require(ggplot2)
 require(sparkle)
-require(dplyr)
 require(rCharts)
+require(dplyr)
 
 ## Data ----
 individDB <- cdb("Data//DataBas")
