@@ -7,23 +7,7 @@ shinyUI(
   navbarPage(
     "Premiepensionen",
     
-    tags$head(tags$style("#controls {
-              /* Appearance */
-                background-color: white;
-                padding: 0 20px 20px 20px;
-                cursor: move;
-              /* Fade out while not hovering */
-                opacity: 0.55;
-                zoom: 0.9;
-                transition: opacity 300ms 0.8s;
-              }
-              #controls:hover {
-              /* Fade in while hovering */
-                opacity: 0.95;
-              transition-delay: 0;
-            }")),
-    
-    tabPanel("Start"),
+    tabPanel("Start", p("Lorem ipsum")),
     
     ## Kontoutveckling ----
     navbarMenu(
@@ -53,7 +37,7 @@ shinyUI(
                      "Månatligt belopp" = "MONAMT"
                    ),
                    selected = "IRR",
-                   selectize = TRUE
+                   selectize = FALSE
                  )
           ),
           column(2,
@@ -80,7 +64,7 @@ shinyUI(
                    animate = TRUE,
                    
                    # Initial value
-                   value = 2010
+                   value = 2008
                  )
           ),
           column(3)
@@ -92,83 +76,122 @@ shinyUI(
       tabPanel(
         "Datautforskare, individuella konton",
         
-        # Flytande kontrollpanel
-          absolutePanel(
-            id = "controls", class = "modal", 
-            fixed = TRUE, 
-            # draggable = TRUE,
-            top = 60, left = "auto", right = 20, bottom = "auto",
-            width = 330, height = "auto",
-            
-            h2("Skärningar av data", style="font-family: 'Helvetica Neue', Helvetica; font-weight: 300"),
-            
-            fluidRow(
-              column(
-                6,
-                checkboxGroupInput("chbSEX", "Kön", c("Kvinnor" = 0, "Män" = 1), selected = c(0, 1))
-              ),
-              column(
-                6,
-                checkboxGroupInput("chbINTE_DOD_AGARE", "Levandestatus (ägare)", c("Levande" = 1, "Döda" = 0), selected = c(1))
+        tags$head(tags$style("#controls {
+              /* Appearance */
+                background-color: white;
+                padding: 0 20px 20px 20px;
+                cursor: move;
+              /* Fade out while not hovering */
+                opacity: 0.55;
+                zoom: 0.9;
+                transition: opacity 800ms 0.1s;
+              }
+              #controls:hover {
+              /* Fade in while hovering */
+                opacity: 0.95;
+              transition-delay: 0;
+            }")),
+        
+        ## Flytande kontrollpanel
+        absolutePanel(
+          id = "controls", class = "modal", 
+          fixed = TRUE, 
+          draggable = FALSE,
+          top = 60, left = "auto", right = 20, bottom = "auto",
+          width = 330, height = "auto",
+          
+          h2("Skärningar av data", style="font-family: 'Helvetica Neue', Helvetica; font-weight: 300"),
+          
+          h4("Demografi"),
+          fluidRow(
+            column(
+              6,
+              checkboxGroupInput("chbSEX", "Kön", c("Kvinnor" = 0, "Män" = 1), selected = c(0, 1))
+            ),
+            column(
+              6,
+              checkboxGroupInput("chbINTE_DOD_AGARE", "Levandestatus (ägare)",
+                                 c("Levande" = 1, "Döda" = 0, "Okänt" = NA), selected = c(1))
+            )
+          ),
+          fluidRow(
+            column(
+              6,
+              selectInput(
+                "selINTJANANDEAR", "Första intjänandeår",
+                choices = c(1995:2010),
+                selected = c(1997:2008),
+                multiple = TRUE, selectize = TRUE
               )
             ),
-            fluidRow(
-              column(
-                6,
-                selectInput(
-                  "selINTJANANDEAR", "Första intjänandeår",
-                  choices = c(1995:2010),
-                  multiple = TRUE, selectize = TRUE
-                )
-              ),
-              column(
-                6,
-                selectInput(
-                  "selFODAR", "Födelseår",
-                  choices = 1914:2012,
-                  selectize = TRUE
-                )
-              )
-            ),
-            hr(),
-            fluidRow(
-              column(
-                6,
-                selectInput(
-                  "selXvar", "Primärvariabel",
-                  choices = c(
-                    "Internränta" = "IRR",
-                    "Kontovärde" = "KONTOVARDE",
-                    "Garanterat belopp" = "GARANTBLP",
-                    "Månatligt belopp" = "MONAMT"
-                  ),
-                  selected = "IRR",
-                  selectize = TRUE
-                )
-              ),
-              column(
-                6,
-                selectInput(
-                  "selYvar", "Sekundärvariabel",
-                  choices = c(
-                    "Internränta" = "IRR",
-                    "Kontovärde" = "KONTOVARDE",
-                    "Garanterat belopp" = "GARANTBLP",
-                    "Månatligt belopp" = "MONAMT"
-                  ),
-                  selected = "MONAMT",
-                  selectize = TRUE
-                )
+            column(
+              6,
+              selectInput(
+                "selFODAR", "Födelseår",
+                choices = birthYears, selected = sample(birthYears, 15),
+                multiple = TRUE, selectize = TRUE
               )
             )
           ),
-        
-        column(3),
-        column(
-          6,
-          plotOutput("indPlot")
+          hr(),
+          h4("Variabler"),
+          fluidRow(
+            column(
+              6,
+              select2Input(
+                "selXvar", "Primärvariabel",
+                choices = c(
+                  "Internränta" = "IRR",
+                  "Kontovärde" = "KONTOVARDE",
+                  "Garanterat belopp" = "GARANTBLP",
+                  "Månatligt belopp" = "MONAMT"
+                ),
+                selected = "IRR",
+                options = list(width = "140px"), selectize = FALSE
+              )
+            ),
+            column(
+              6,
+              select2Input(
+                "selYvar", "Sekundärvariabel",
+                choices = c(
+                  "Internränta" = "IRR",
+                  "Kontovärde" = "KONTOVARDE",
+                  "Garanterat belopp" = "GARANTBLP",
+                  "Månatligt belopp" = "MONAMT"
+                ),
+                selected = "MONAMT",
+                options = list(width = "140px"), selectize = FALSE
+              )
+            )
+          ),
+          fluidRow(
+            column(
+              6,
+              select2Input(
+                "selYear",
+                "Data för år",
+                choices = c(2000:2013), selected = 2010,
+                multiple = FALSE, # TODO: Implementera stöd för flera år åt gången
+                options = list(width = "140px"), selectize = FALSE
+              )
+            )
+          )
         ),
-        column(3)
+        
+        ## Plotfönster
+        fluidRow(
+          column(3),
+          # column(6,showOutput("indPlot","polycharts")),
+          column(6, plotOutput("heatmap")),
+          column(3)
+        ),
+        fluidRow(
+          column(3),
+          column(6, plotOutput("density")),
+          # column(9, showOutput("indPlot2","nvd3")),
+          column(3)
+        )
       ),
       
       

@@ -6,14 +6,22 @@ require(Coldbir) # >= 0.5
 require(data.table) # >= 1.9.2¨
 require(ggplot2)
 require(sparkle)
+require(dplyr)
+require(rCharts)
 
 ## Data ----
-prepDB <- cdb("Data//DataBas")
+individDB <- cdb("Data//DataBas")
 
 system.time(base_data <- data.table(
-  prepDB['FODAR'],
-  prepDB['FONDPLACERINGSAR'],
-  prepDB['INTJANANDEAR'],
-  prepDB['INTRADESAR'],
-  prepDB['SEX']
+  individDB['FODAR'],
+  individDB['FONDPLACERINGSAR'],
+  individDB['INTJANANDEAR'],
+  individDB['INTRADESAR'],
+  individDB['SEX']
 ))
+
+birthYears <- sort(unique(base_data$FODAR))
+entryYears <- sort(unique(base_data$INTJANANDEAR))
+
+# Fonddata: ppindex
+load("Data//ppindex.RData")
