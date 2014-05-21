@@ -8,6 +8,7 @@ require(ggplot2)
 require(sparkle)
 require(rCharts)
 require(dplyr)
+require(ggthemes)
 
 ## Data ----
 individDB <- cdb("Data//DataBas")

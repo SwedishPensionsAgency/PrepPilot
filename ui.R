@@ -8,14 +8,33 @@ shinyUI(
     "Premiepensionen",
     
     tabPanel("Start", p("Lorem ipsum")),
-    
+
     ## Kontoutveckling ----
     navbarMenu(
       "Kontoutveckling",
       
+      
       ## > Fördelning, individuella konton ----
       tabPanel(
         "Fördelning, individuella konton",
+        
+        # Text
+        fluidRow(
+          column(3),
+          column(
+            6,
+            h2("Fördelning av några variabler", style = "text-align: center;"),
+            p("Grafen nedan visar fördelningen av vald variabel i ett histogram 
+              längs x-axeln. ", em("Stapelbredden" ), "redovisas i diagramtexten. ",
+              em("Stapelhöjden "), "återspeglar antal personer i varje kategori."),
+            p("Genom att förändra reglagevärdena kan olika variabler utforskas
+              för olika tidpunkt och olika upplösning."),
+            hr()
+          ),
+          column(3)
+        ),
+        
+        # Graph
         fluidRow(
           column(3),
           column(
@@ -24,6 +43,8 @@ shinyUI(
           ),
           column(3)
         ),
+        
+        # Controls
         fluidRow(
           column(3),
           column(2,
@@ -76,13 +97,33 @@ shinyUI(
       tabPanel(
         "Datautforskare, individuella konton",
         
+        # Text
+        fluidRow(
+          column(3),
+          column(
+            6,
+            h2("Utforskare för individdata", style = "text-align: center;"),
+            p("Graferna nedan visar olika aspekter av individdata för premiepensionen.
+              För att välja olika skärningar på data kan menyn till höger användas.
+              För musen över den för att visa menyn."),
+            p("Graf 1 är en ", em("heatmap "), "som visar fördelningen av den valda 
+              \"primärvariabeln\" för födelseår och intjänandeår."),
+            p(strong("OBS! "), "Denna flik är inte byggd för prestanda. Det kan
+              därför ta upp till 10-15 sekunder att generera graferna nedan även
+              på en snabb dator."),
+            hr()
+          ),
+          column(3)
+        ),
+        
+        # Floating control panel
         tags$head(tags$style("#controls {
               /* Appearance */
                 background-color: white;
                 padding: 0 20px 20px 20px;
                 cursor: move;
               /* Fade out while not hovering */
-                opacity: 0.55;
+                opacity: 0.15;
                 zoom: 0.9;
                 transition: opacity 800ms 0.1s;
               }
@@ -92,7 +133,6 @@ shinyUI(
               transition-delay: 0;
             }")),
         
-        ## Flytande kontrollpanel
         absolutePanel(
           id = "controls", class = "modal", 
           fixed = TRUE, 
@@ -100,7 +140,7 @@ shinyUI(
           top = 60, left = "auto", right = 20, bottom = "auto",
           width = 330, height = "auto",
           
-          h2("Skärningar av data", style="font-family: 'Helvetica Neue', Helvetica; font-weight: 300"),
+          h2("Skärningar av data"),
           
           h4("Demografi"),
           fluidRow(
@@ -120,7 +160,7 @@ shinyUI(
               selectInput(
                 "selINTJANANDEAR", "Första intjänandeår",
                 choices = c(1995:2010),
-                selected = c(1997:2008),
+                selected = c(2003:2008),
                 multiple = TRUE, selectize = TRUE
               )
             ),
@@ -128,7 +168,7 @@ shinyUI(
               6,
               selectInput(
                 "selFODAR", "Födelseår",
-                choices = birthYears, selected = sample(birthYears, 15),
+                choices = birthYears, selected = sample(birthYears, 5),
                 multiple = TRUE, selectize = TRUE
               )
             )
@@ -183,17 +223,16 @@ shinyUI(
         fluidRow(
           column(3),
           # column(6,showOutput("indPlot","polycharts")),
-          column(6, plotOutput("heatmap")),
+          column(6, plotOutput("indHeatmap")),
           column(3)
         ),
         fluidRow(
           column(3),
-          column(6, plotOutput("density")),
+          column(6, plotOutput("indDensity")),
           # column(9, showOutput("indPlot2","nvd3")),
           column(3)
         )
       ),
-      
       
       ## > Tabeller ----
       tabPanel("Tabeller")
@@ -203,22 +242,30 @@ shinyUI(
     navbarMenu(
       "Fondrörelsen",
       
-      ## > Värdeutveckling per kalenderår ----
+      ## > Tidsserier ----
       tabPanel(
-        "Värdeutveckling per kalenderår",
+        "Tidsserier",
         fluidRow(
           column(3),
           column(6, showOutput("fndTimeSeries","nvd3")),
           column(3)
         )
-        
       ),
       
-      ## > Tidsserier ----
-      tabPanel("Tidsserier"),
+      ## > Värdeutveckling per kalenderår ----
+      tabPanel(
+        "Värdeutveckling per kalenderår",
+        fluidRow(
+          column(3),
+          column(6, showOutput("fndYearlyGrowth","nvd3")),
+          column(3)
+        )
+      ),
       
       ## > Tabeller ----
-      tabPanel("Tabeller")
+      tabPanel(
+        "Tabeller"
+      )
     ),
     
     ## Menu ----
@@ -227,5 +274,11 @@ shinyUI(
       tabPanel("Data"),
       tabPanel("Licens"),
       tabPanel("Källkod")
-    )
-  ))
+    ),
+    
+    singleton(tags$head(
+      tags$style(
+        "h2 { font-family: 'Helvetica Neue', Helvetica; font-weight: 300; }"
+      )))
+  )
+)
