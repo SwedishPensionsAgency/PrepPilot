@@ -5,10 +5,11 @@ require(shiny) # >= 0.9
 require(Coldbir) # >= 0.5
 require(data.table) # >= 1.9.2¨
 require(ggplot2)
-require(sparkle)
-require(rCharts)
-require(dplyr)
+require(sparkle) # Github
+require(rCharts) # Github
+require(dplyr) # Github
 require(ggthemes)
+require(XLConnect)
 
 ## Data ----
 individDB <- cdb("Data//DataBas")
