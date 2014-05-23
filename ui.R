@@ -229,7 +229,7 @@ shinyUI(
         ),
         
         hr(),
-        h3("")
+        h3(""),
         fluidRow(
           column(3),
           column(6, plotOutput("indDensity")),
