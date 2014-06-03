@@ -1,3 +1,5 @@
+## Headerkommentar
+
 library(data.table)
 
 CPICol <- "KPI"
