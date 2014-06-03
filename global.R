@@ -9,7 +9,6 @@ require(sparkle) # install_github("metagraf/sparkle")
 require(rCharts) # install_github("ramnathv/rCharts", ref="dev")
 require(dplyr)
 require(ggthemes)
-require(XLConnect)
 
 ## Data ----
 individDB <- cdb("Data//DataBas")

@@ -103,14 +103,13 @@ shinyUI(
           column(
             6,
             h2("Utforskare för individdata", style = "text-align: center;"),
-            p("Grafen nedan är en ", em("heatmap "), "som visar fördelningen av den valda 
+            p("Graferna nedan visar olika aspekter av individdata för premiepensionen.
+              För att välja olika skärningar på data kan menyn till höger användas.
+              För musen över den för att visa menyn."),
+            p("Graf 1 är en ", em("heatmap "), "som visar fördelningen av den valda 
               \"primärvariabeln\" för födelseår och intjänandeår."),
-            p("För att välja olika skärningar på data kan menyn till höger användas.
-              För musen till höger på bildskärmen för att visa menyn."),
-            p("GörEfter att valda ändringar gjorts, tryck på \"uppdatera graf\"-
-              knappen."),
-            p(strong("OBS! "), "Denna graf är inte byggd för prestanda. Det kan
-              därför ta upp till 10-20 sekunder att generera graferna nedan även
+            p(strong("OBS! "), "Denna flik är inte byggd för prestanda. Det kan
+              därför ta upp till 10-15 sekunder att generera graferna nedan även
               på en snabb dator."),
             hr()
           ),
@@ -161,7 +160,7 @@ shinyUI(
               selectInput(
                 "selINTJANANDEAR", "Första intjänandeår",
                 choices = c(1995:2010),
-                selected = c(2003:2006),
+                selected = c(2003:2008),
                 multiple = TRUE, selectize = TRUE
               )
             ),
@@ -169,7 +168,7 @@ shinyUI(
               6,
               selectInput(
                 "selFODAR", "Födelseår",
-                choices = birthYears, selected = sample(birthYears, 4),
+                choices = birthYears, selected = sample(birthYears, 5),
                 multiple = TRUE, selectize = TRUE
               )
             )
@@ -194,6 +193,22 @@ shinyUI(
             column(
               6,
               select2Input(
+                "selYvar", "Sekundärvariabel",
+                choices = c(
+                  "Internränta" = "IRR",
+                  "Kontovärde" = "KONTOVARDE",
+                  "Garanterat belopp" = "GARANTBLP",
+                  "Månatligt belopp" = "MONAMT"
+                ),
+                selected = "MONAMT",
+                options = list(width = "140px"), selectize = FALSE
+              )
+            )
+          ),
+          fluidRow(
+            column(
+              6,
+              select2Input(
                 "selYear",
                 "Data för år",
                 choices = c(2000:2013), selected = 2010,
@@ -201,26 +216,23 @@ shinyUI(
                 options = list(width = "140px"), selectize = FALSE
               )
             )
-          ),
-          hr(),
-          fluidRow(
-            column(6, offset = 3,
-                   actionButton("indUpdate","Uppdatera data")
-            )
           )
         ),
         
         ## Plotfönster
+        h3("Utfall i premiepensionssystemet per födelseår och intjänandeår", style = "text-align: center;"),
+        
         fluidRow(
           column(3),
-          # column(6,showOutput("indPlot","polycharts")),
           column(6, plotOutput("indHeatmap")),
           column(3)
         ),
+        
+        hr(),
+        h3(""),
         fluidRow(
           column(3),
           column(6, plotOutput("indDensity")),
-          # column(9, showOutput("indPlot2","nvd3")),
           column(3)
         )
       ),
@@ -236,40 +248,9 @@ shinyUI(
       ## > Tidsserier ----
       tabPanel(
         "Tidsserier",
-        
-        # Text
-        fluidRow(
-          column(3),
-          column(
-            6,
-            h2("Tidsserie för Premiepensionsindex", style="text-align: center;"),
-            p("Denna graf visar den historiska utvecklingen för Premiepensionsindex
-              på dagsbasis mellan 2000-12-13 och 2014-03-20. Index=100 är bestämt
-              tid tidpunkten ", em("t "), "= 2000-12-13."),
-            p("För musen över grafen för att se värdet för en enskild punkt i grafen."),
-            hr()
-          ),
-          column(3)
-        ),
-        
-        # Graph
         fluidRow(
           column(3),
           column(6, showOutput("fndTimeSeries","nvd3")),
-          column(3)
-        ),
-        
-        # Controls
-        fluidRow(
-          column(3),
-          column(
-            6,
-            hr(),
-            sidebarPanel(
-              downloadButton("fndDownloadData", "Ladda ned data"),
-              radioButtons("fndFileFormat", "Filformat", c("CSV", "Excel"), selected = "CSV")
-            )
-          ),
           column(3)
         )
       ),
@@ -277,21 +258,6 @@ shinyUI(
       ## > Värdeutveckling per kalenderår ----
       tabPanel(
         "Värdeutveckling per kalenderår",
-        
-        # Text
-        fluidRow(
-          column(3),
-          column(
-            6,
-            h2("Värdeutveckling i Premiepensionsindex på årsbasis", style="text-align: center;"),
-            p("Staplarna nedan visar utvecklingen i Premiepensionsindex per kalenderår."),
-            p("För musen över en stapel för att se värdet för ett givet år."),
-            hr()
-          ),
-          column(3)
-        ),
-        
-        # Graph
         fluidRow(
           column(3),
           column(6, showOutput("fndYearlyGrowth","nvd3")),
@@ -315,7 +281,7 @@ shinyUI(
     
     singleton(tags$head(
       tags$style(
-        "h2 { font-family: 'Helvetica Neue', Helvetica; font-weight: 300; }"
+        "h2, h3 { font-family: 'Helvetica Neue', Helvetica; font-weight: 300; }"
       )))
   )
 )
