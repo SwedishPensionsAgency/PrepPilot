@@ -2,12 +2,12 @@
 
 ## Libraries ----
 require(shiny) # >= 0.9
-require(Coldbir) # >= 0.5
+require(Coldbir) # install_github("SwedishPensionsAgency/Coldbir")
 require(data.table) # >= 1.9.2¨
 require(ggplot2)
-require(sparkle) # Github
-require(rCharts) # Github
-require(dplyr) # Github
+require(sparkle) # install_github("metagraf/sparkle")
+require(rCharts) # install_github("ramnathv/rCharts", ref="dev")
+require(dplyr)
 require(ggthemes)
 require(XLConnect)
 

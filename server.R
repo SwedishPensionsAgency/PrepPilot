@@ -32,7 +32,7 @@ shinyServer(function(input, output) {
     hist(x, breaks = bins,
          col = 'skyblue', border = ifelse(length(bins) < 100, 'white', 'skyblue'),
          main = paste0(
-           "Fördelning av ",
+           "F\u00F6rdelning av ",
            input$variable,
            " (kolumnbredd:",
            signif(bins[2]-bins[1], 3),
