@@ -49,44 +49,45 @@ shinyServer(function(input, output) {
   
   ## Reactive function to generate data for individual-based data
   indData <- reactive({
+    input$indUpdate
     
-    # Error handling
-    if (is.null(input$selINTJANANDEAR) |
-          is.null(input$selFODAR) |
-          is.null(input$chbSEX) |
-          is.null(input$chbINTE_DOD_AGARE)
-    ) { return() }
-    
-    # Load data from Coldbir database
-    plotData <- data.table(
-      base_data,
-      individDB[input$selXvar, input$selYear],
-      individDB[input$selYvar, input$selYear],
-      individDB['INTE_DOD_AGARE', input$selYear]
-    )
-    
-    # Name munging
-    setnames(plotData,
-             c(
-               paste0('INTE_DOD_AGARE___', input$selYear),
-               paste0(input$selXvar, '___', input$selYear),
-               paste0(input$selYvar, '___', input$selYear)
-             ),
-             c('INTE_DOD_AGARE', input$selXvar, input$selYvar)
-    )
-    
-    # Filter by parameters from selector menu
-    plotData <- plotData[SEX %in% input$chbSEX &
-                           INTE_DOD_AGARE %in% input$chbINTE_DOD_AGARE &
-                           INTJANANDEAR %in% input$selINTJANANDEAR &
-                           FODAR %in% input$selFODAR &
-                           !is.na(plotData[[input$selXvar]]) &
-                           !is.na(plotData[[input$selXvar]])
-                         ]
-    
-    cat("Plotdata för individplot har", nrow(plotData), "rader.\n")
-    
-    return(plotData)
+    isolate({
+      # Error handling
+      if (is.null(input$selINTJANANDEAR) |
+            is.null(input$selFODAR) |
+            is.null(input$chbSEX) |
+            is.null(input$chbINTE_DOD_AGARE)
+      ) { return() }
+      
+      # Load data from Coldbir database
+      plotData <- data.table(
+        base_data,
+        individDB[input$selXvar, input$selYear],
+        individDB['INTE_DOD_AGARE', input$selYear]
+      )
+      
+      # Name munging
+      setnames(plotData,
+               c(
+                 paste0('INTE_DOD_AGARE___', input$selYear),
+                 paste0(input$selXvar, '___', input$selYear)
+               ),
+               c('INTE_DOD_AGARE', input$selXvar)
+      )
+      
+      # Filter by parameters from selector menu
+      plotData <- plotData[SEX %in% input$chbSEX &
+                             INTE_DOD_AGARE %in% input$chbINTE_DOD_AGARE &
+                             INTJANANDEAR %in% input$selINTJANANDEAR &
+                             FODAR %in% input$selFODAR &
+                             !is.na(plotData[[input$selXvar]]) &
+                             !is.na(plotData[[input$selXvar]])
+                           ]
+      
+      cat("Plotdata för individplot har", nrow(plotData), "rader.\n")
+      
+      return(plotData)
+    })
   })
   
   ## THE FOLLOWING RCHARTS FUNCTIONS ARE NOT IN USE AND SHOULD BE CONSIDERED FOR DELETION
@@ -98,11 +99,9 @@ shinyServer(function(input, output) {
   #       byearSexSummaries <- plotdata %>%
   #         group_by(FODAR, SEX) %>%
   #         summarise(
-  #           primmean = mean(primvar, na.rm=TRUE),
-  #           secmean = mean(secvar, na.rm=TRUE)
+  #           primmean = mean(primvar, na.rm=TRUE)
   #         )},
-  #       list(primvar = as.name(input$selXvar),
-  #            secvar = as.name(input$selYvar))
+  #       list(primvar = as.name(input$selXvar))
   #     )
   #     eval(call)
   #     
@@ -130,21 +129,19 @@ shinyServer(function(input, output) {
       byearSexSummaries <- plotdata %>%
         group_by(FODAR, INTJANANDEAR) %>%
         summarise(
-          primmean = mean(primvar, na.rm=TRUE),
-          secmean = mean(secvar, na.rm=TRUE)
+          primmean = mean(primvar, na.rm=TRUE)
         )},
-      list(primvar = as.name(input$selXvar),
-           secvar = as.name(input$selYvar))
+      list(primvar = as.name(input$selXvar))
     )
     eval(call)
     
     # Define plot
     base_size = 14
     
-    p <- ggplot(byearSexSummaries, aes(x = as.factor(INTJANANDEAR), y = as.factor(FODAR))) + 
+    p <- ggplot(byearSexSummaries, aes(y = as.factor(INTJANANDEAR), x = as.factor(FODAR))) + 
       geom_tile(aes(fill = primmean), colour = "white") + 
       scale_fill_gradient(low = "white", high = "steelblue") + 
-      labs(x = "Intjänandeår", y = "Födelseår", title = input$selXvar) + 
+      labs(y = "Intj\u00E4nande\u00E5r", x = "F\u00F6delse\u00E5r", title = input$selXvar) + 
       theme_grey(base_size = base_size) +
       scale_x_discrete(expand = c(0, 0)) +
       scale_y_discrete(expand = c(0, 0)) + 
@@ -160,18 +157,18 @@ shinyServer(function(input, output) {
   })
   
   
-  ## Facet density plot
-  output$indDensity <- renderPlot({
-    NULL
-  })
-  
-  
   ## Fondrörelsen ----
   
+  
   ## > Tidsserier ----
+  # Reactive method for getting ppindex data
+  ppdata <- reactive({ return(ppindex) })
+  
+  
+  # Chart output
   output$fndTimeSeries <- renderChart2({
     # Get data
-    plotdata <- copy(ppindex)
+    plotdata <- ppdata()
     
     # Define plot
     pr1 <- nPlot(PPINDEX ~ UPDEDT, data = plotdata, type = "lineChart")
@@ -182,10 +179,48 @@ shinyServer(function(input, output) {
     return(pr1)
   })
   
+  # Download handler
+  output$fndDownloadData <- downloadHandler(
+    filename = function() {
+      paste('fonddata-', Sys.Date(), '.csv', sep='')
+    },
+    content = function(con) {
+      temp_file <- paste0(tempfile(),".xlsx")
+      on.exit(unlink(temp_file))
+      
+      # Function to write XLSX file
+      xlfun <- function(input, output) {
+        # Error handling
+        if(!require(XLConnect)) {
+          warning("Could not find package 'XLConnect'. Exporting data to CSV instead of XLS. Please run install.packages('XLConnect') to enable export to XLS.")
+          
+          write.csv(input, file = output, row.names = FALSE)
+        } else {
+          wb <- loadWorkbook(output, create = TRUE)
+          createSheet(wb, name = "output")
+          writeWorksheet(wb, input, sheet = "output")
+          saveWorkbook(wb)
+        }
+      }
+      
+      # Write file of the selected to tempfile
+      if (input$fndFileFormat == "Excel") {
+        xlfun(ppdata(), temp_file)
+      } else {
+        write.csv(ppdata(), file = temp_file, row.names = FALSE)
+      }
+      
+      # Read tempfile and return it to the user
+      bytes <- readBin(temp_file, "raw", file.info(temp_file)$size)
+      writeBin(bytes, con)
+    }
+  )
+  
+  
   ## > Värdeutveckling per kalenderår ----
   output$fndYearlyGrowth <- renderChart2({
     # Get data
-    plotdata <- ppindex %>%
+    plotdata <- ppdata() %>%
       # Find year of datestamp
       mutate(year = year(UPDEDT)) %>%
       # Year 2000 and 2014 are incomplete so we exclude them
@@ -199,10 +234,15 @@ shinyServer(function(input, output) {
       
     # Define plot
     pr2 <- nPlot(growth ~ year, data = plotdata, type = "multiBarChart")
-    pr2$yAxis(axisLabel = "Årlig tillväxt", width = 62)
-    pr2$xAxis(axisLabel = "År")
+    pr2$yAxis(axisLabel = "\u00C5rlig tillväxt", width = 62)
+    pr2$xAxis(axisLabel = "\u00C5r")
     
     return(pr2)
   })
   
+  
+  ## DEV ----
+#   output$text <- renderText({
+#     sprintf("The capital of %s is %s.", "a", input$click$)
+#   })
 })
