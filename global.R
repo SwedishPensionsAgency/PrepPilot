@@ -10,7 +10,6 @@ require(rCharts) # install_github("ramnathv/rCharts", ref="dev")
 require(plyr)
 require(dplyr)
 require(ggthemes)
-require(XLConnect)
 
 ## Data ----
 individDB <- cdb("Data//DataBas")
