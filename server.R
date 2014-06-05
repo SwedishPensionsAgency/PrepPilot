@@ -240,4 +240,9 @@ shinyServer(function(input, output) {
     return(pr2)
   })
   
+  
+  ## DEV ----
+#   output$text <- renderText({
+#     sprintf("The capital of %s is %s.", "a", input$click$)
+#   })
 })
