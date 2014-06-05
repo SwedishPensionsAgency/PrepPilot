@@ -7,11 +7,7 @@ shinyUI(
   navbarPage(
     "Premiepensionen",
     
-    tabPanel(
-      "Start", 
-      p("Lorem ipsum")
-#       textOutput("text")
-    ),
+    tabPanel("Start", p("Lorem ipsum")),
 
     ## Kontoutveckling ----
     navbarMenu(
