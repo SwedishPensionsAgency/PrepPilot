@@ -2,16 +2,17 @@
 
 library(data.table)
 
-CPICol <- "KPI"
-dateCol  <-  'UPDEDT'
-indexCol  <- 'PPINDEX'
-
-dateStart <- as.Date('2005-12-13')
-dateEnd <- as.Date('2013-12-31')
-
-realIndex(data, dateCol, indexCol, CPICol, dateStart, dateEnd)
-yearlyRate(data,dateCol,indexCol,dateStart,dateEnd)
-index(data,dateCol,indexCol,dateStart, dateEnd)
+## Test code (not run)
+# CPICol <- "KPI"
+# dateCol  <-  'UPDEDT'
+# indexCol  <- 'PPINDEX'
+# 
+# dateStart <- as.Date('2005-12-13')
+# dateEnd <- as.Date('2013-12-31')
+# 
+# realIndex(data, dateCol, indexCol, CPICol, dateStart, dateEnd)
+# yearlyRate(data,dateCol,indexCol,dateStart,dateEnd)
+# index(data,dateCol,indexCol,dateStart, dateEnd)
 
 ### Calculates the yearly return -----------------------------------------------
 #' Arguments:
@@ -76,7 +77,7 @@ index <- function(data, dateCol, indexCol, dateStart, dateEnd) {
 #' dateStart = The start date in date format
 #' dateEnd = The end value in date format
   
-realIndex <-  function(data, dateCol, indexCol, CPICol, dateStart, dateEnd) {
+realIndex <- function(data, dateCol, indexCol, CPICol, dateStart, dateEnd) {
   
   # Subsetting data for the given period
   data2 <- data[data[[dateCol]] >= dateStart & data[[dateCol]] <= dateEnd]
