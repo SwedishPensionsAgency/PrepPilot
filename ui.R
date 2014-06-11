@@ -390,7 +390,7 @@ shinyUI(
                 "Vecka" = 7,
                 "Månad" = 30
               ),
-              selected = 30,
+              selected = 7,
               selectize = FALSE
             )
           ),

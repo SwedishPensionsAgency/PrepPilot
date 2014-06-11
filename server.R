@@ -30,7 +30,7 @@ shinyServer(function(input, output) {
     options(scipen = 10) # We need this to avoid scientific format notation in plot axes
     
     hist(x, breaks = bins,
-         col = 'orange', border = ifelse(length(bins) < 100, 'white', 'skyblue'),
+         col = 'orange', border = ifelse(length(bins) < 100, 'white', 'orange'),
          main = paste0(
            "F\u00F6rdelning av ",
            input$variable
@@ -169,7 +169,7 @@ shinyServer(function(input, output) {
   output$fndTimeSeries <- renderChart2({
     # Get data
     plotdata <- tsdata()
-    print(plotdata)
+    # print(plotdata)
     
     # Define plot
     pr1 <- nPlot(y="plotVar", x="Datum", data = plotdata, type = "lineChart")
@@ -244,7 +244,6 @@ shinyServer(function(input, output) {
       )
     }
     
-    
     # Date filtering
     if (input$ixRes == 7) {
       data <- data %>%
@@ -265,7 +264,7 @@ shinyServer(function(input, output) {
   output$fndIndexSeries <- renderChart2({
     # Get data
     plotdata <- ixdata()
-    print(plotdata)
+    # print(plotdata)
     
     # Define plot
     if (input$ixYearly) {
@@ -311,11 +310,11 @@ shinyServer(function(input, output) {
     }
   })
   
-  
+  # Render plot
   output$fndYearlyGrowth <- renderChart2({
     # Get data
     plotdata <- yrdata()
-    print(plotdata)
+    # print(plotdata)
 
     # Define plot
     pr2 <- nPlot(growth ~ Year, data = plotdata, type = "multiBarChart")
