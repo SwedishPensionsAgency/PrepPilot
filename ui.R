@@ -9,8 +9,16 @@ shinyUI(
     
     tabPanel(
       "Start", 
-      p("Lorem ipsum")
-#       textOutput("text")
+      fluidRow(
+        column(6, offset = 3, img(src="img/PM_logo.jpg"))
+      ),
+      fluidRow(
+        column(
+          6, offset = 3,
+          h2("Premiepensionsportalen", style = "text-align: center;"),
+          p("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+        )
+      )
     ),
 
     ## Kontoutveckling ----
@@ -243,18 +251,69 @@ shinyUI(
         
         # Text
         fluidRow(
-          column(3),
           column(
-            6,
-            h2("Tidsserie för Premiepensionsindex", style="text-align: center;"),
-            p("Denna graf visar den historiska utvecklingen för Premiepensionsindex
+            6, offset = 3,
+            h2("Tidsserier", style="text-align: center;"),
+            tags$small(p("Grafen visar den historiska utvecklingen för valt index
               på dagsbasis mellan 2000-12-13 och 2014-03-20. Index=100 är bestämt
               tid tidpunkten ", em("t "), "= 2000-12-13."),
-            p("För musen över grafen för att se värdet för en enskild punkt i grafen."),
+            p("För musen över grafen för att se värdet för en enskild punkt i grafen.")),
             hr()
-          ),
-          column(3)
+          )
         ),
+        
+        # Controls
+        fluidRow(
+          column(
+            2, offset = 3,
+            select2Input(
+              "tsVar",
+              "Visa tidsserie för",
+              choices = c(
+                "Internränta" = "IRR",
+                "Internränta (real)" = "IRRReal",
+                "Premiepensionsindex" = "PPINDEX",
+                "AP7-index" = "AP7INDEX",
+                "Marknadsvärde, fondrörelsen" = "MVFondrorelse",
+                "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
+              ),
+              selected = "IRR",
+              selectize = FALSE
+            )
+          ),
+          column(
+            2,
+            select2Input(
+              "tsRes",
+              "Upplösning för tidsserie",
+              choices = c(
+                "Dag" = 1,
+                "Vecka" = 7,
+                "Månad" = 30
+              ),
+              selected = 30,
+              selectize = FALSE
+            )
+          ),
+          column(
+            2,
+            dateInput(
+              "tsStartdate", "Välj tidsperiod", value = "2000-12-13",
+              min = "2000-12-13", max = "2014-04-30", weekstart = 1,
+              startview = "year",
+              language = "sv"
+            ),
+            dateInput(
+              "tsEnddate", "", value = "2014-04-30",
+              min = "2000-12-13", max = "2014-04-30", weekstart = 1,
+              startview = "year",
+              language = "sv"
+            )
+          )
+        ),
+        
+        # hr()
+        fluidRow(column(6, offset = 3, hr())),
         
         # Graph
         fluidRow(
@@ -278,6 +337,91 @@ shinyUI(
         )
       ),
       
+      ## > Index ----
+      tabPanel(
+        "Indexserier",
+        
+        # Text
+        fluidRow(
+          column(
+            6, offset = 3,
+            h2("Indexserier", style="text-align: center;"),
+            tags$small(
+              p("Här visas värdeutvecklingen för fondrörelsen, dvs alla fonder inklusive Premiesparfonden och AP7 Såfa sedan systemets start 2000-12-13."),
+              p("Tidsviktad avkastning, TVA mäter avkastningen på en genomsnittlig krona som sattes in i premiepensionssystemet 2000-12-13. Premiepensionsindex kan jämföras med marknadsindex och enskilda fonders avkastning. Rabatten på fondavgiften, myndighetens avgift och arvsvinster är inte medräknade."),
+              p("Real avkastning = avkastning/inflation (KPI)", br(),
+                "Med årsavkastning menas genomsnittlig avkastning sedan start.")
+            ),
+            hr()
+          )
+        ),
+        
+        # Controls
+        fluidRow(
+          column(
+            2, offset = 3,
+            select2Input(
+              "ixVar",
+              "Visa tidsserie för",
+              choices = c(
+                # "Internränta" = "IRR",
+                # "Internränta (real)" = "IRRReal",
+                "Premiepensionsindex" = "PPINDEX",
+                "AP7-index" = "AP7INDEX"
+                # "Marknadsvärde, fondrörelsen" = "MVFondrorelse",
+                # "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
+              ),
+              selected = "IRR",
+              selectize = FALSE
+            ),
+            checkboxInput(
+              "ixYearly",
+              "Beräkna årsavkastning",
+              value = FALSE
+            )
+          ),
+          column(
+            2,
+            select2Input(
+              "ixRes",
+              "Upplösning för tidsserie",
+              choices = c(
+                "Dag" = 1,
+                "Vecka" = 7,
+                "Månad" = 30
+              ),
+              selected = 30,
+              selectize = FALSE
+            )
+          ),
+          column(
+            2,
+            dateInput(
+              "ixStartdate", "Välj tidsperiod", value = "2000-12-13",
+              min = "2000-12-13", max = "2014-04-30", weekstart = 1,
+              startview = "year",
+              language = "sv"
+            ),
+            dateInput(
+              "ixEnddate", "", value = "2014-04-30",
+              min = "2000-12-13", max = "2014-04-30", weekstart = 1,
+              startview = "year",
+              language = "sv"
+            )
+          )
+        ),
+        
+        # hr()
+        fluidRow(column(6, offset = 3, hr())),
+        
+        # Graph
+        fluidRow(
+          column(3),
+          column(6, showOutput("fndIndexSeries","nvd3")),
+          column(3)
+        )
+      ),
+      
       ## > Värdeutveckling per kalenderår ----
       tabPanel(
         "Värdeutveckling per kalenderår",
@@ -295,6 +439,38 @@ shinyUI(
           column(3)
         ),
         
+        # Controls
+        fluidRow(
+          column(
+            2, offset = 3,
+            select2Input(
+              "yrVar",
+              "Visa tidsserie för",
+              choices = c(
+                "Internränta" = "IRR",
+                "Internränta (real)" = "IRRReal",
+                "Premiepensionsindex" = "PPINDEX",
+                "AP7-index" = "AP7INDEX",
+                "Marknadsvärde, fondrörelsen" = "MVFondrorelse",
+                "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
+              ),
+              selected = "IRR",
+              selectize = FALSE
+            )
+          ),
+          column(
+            2,
+            checkboxInput(
+              "yrDiff",
+              "Visa årsdifferens",
+              value = TRUE
+            )
+          )
+        ),
+        
+        # hr()
+        fluidRow(column(6, offset = 3, hr())),
+        
         # Graph
         fluidRow(
           column(3),
@@ -305,7 +481,44 @@ shinyUI(
       
       ## > Tabeller ----
       tabPanel(
-        "Tabeller"
+        "Tabeller",
+        
+        # Text
+        fluidRow(
+          column(3),
+          column(
+            6,
+            h2("Fondtabeller", style="text-align: center;"),
+            p("tabellen visar fondstatistik för samtliga fonder. Du kan själv välja vilken information som ska visas i tabellen."),
+            p("Genom sökfunktionen kan du söka på namn på individuella fonder eller "),
+            hr()
+          ),
+          column(3)
+        ),
+        
+        # Controls
+        fluidRow(
+          column(
+            6, offset = 3,
+            select2Input(
+              "tblVars",
+              "Välj kolumner att visa i tabellen",
+              choices = names(dataFond),
+              selected = names(dataFond)[1:5],
+              options = list(maximumSelectionSize = 6),
+              multiple = TRUE, selectize = FALSE
+            ),
+            hr()
+          )
+        ),
+        
+        # Tables
+        fluidRow(
+          column(
+            6, offset = 3,
+            dataTableOutput("ppTables")
+          )
+        )
       )
     ),
     

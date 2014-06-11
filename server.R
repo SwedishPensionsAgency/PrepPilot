@@ -30,16 +30,18 @@ shinyServer(function(input, output) {
     options(scipen = 10) # We need this to avoid scientific format notation in plot axes
     
     hist(x, breaks = bins,
-         col = 'skyblue', border = ifelse(length(bins) < 100, 'white', 'skyblue'),
+         col = 'orange', border = ifelse(length(bins) < 100, 'white', 'skyblue'),
          main = paste0(
            "F\u00F6rdelning av ",
-           input$variable,
-           " (kolumnbredd:",
-           signif(bins[2]-bins[1], 3),
-           ")"
+           input$variable
+           #            " (kolumnbredd:",
+           #            signif(bins[2]-bins[1], 3),
+           #            ")"
          ),
          xlab = format(input$variable, scientific = FALSE),
-         ylab = "Antal"
+         # ylab = "Antal"
+         ylab = "",
+         yaxt='n'
     )
     
   })
@@ -90,39 +92,6 @@ shinyServer(function(input, output) {
     })
   })
   
-  ## THE FOLLOWING RCHARTS FUNCTIONS ARE NOT IN USE AND SHOULD BE CONSIDERED FOR DELETION
-  #   output$indPlot <- renderChart({
-  #     plotdata <- indData()
-  #     
-  #     # Summarizations
-  #     call <- substitute({
-  #       byearSexSummaries <- plotdata %>%
-  #         group_by(FODAR, SEX) %>%
-  #         summarise(
-  #           primmean = mean(primvar, na.rm=TRUE)
-  #         )},
-  #       list(primvar = as.name(input$selXvar))
-  #     )
-  #     eval(call)
-  #     
-  #     pr1 <- rPlot("primmean" ~ "FODAR", data = byearSexSummaries,
-  #                  type = "point", color = "SEX")
-  #     pr1$addParams(height = 300, dom = 'indPlot', 
-  #                      title = "SomeTitle")
-  #     
-  #     return(pr1)
-  #     
-  #   })
-  #   
-  #   output$indPlot2 <- renderChart2({
-  #     plotdata <- indData()
-  #     
-  #     pr2 <- nPlot(y="IRR", x="FODAR", group = "SEX", data = plotdata, type = "multiBarChart")
-  #     
-  #     return(pr2)
-  #   })
-  
-  
   output$indHeatmap <- renderPlot({
     plotdata <- indData()
     call <- substitute({
@@ -151,6 +120,8 @@ shinyServer(function(input, output) {
            panel.background = element_blank()
       )
     
+    pp <<- copy(p)
+    
     print(p)
     
     #     return(p)
@@ -162,19 +133,50 @@ shinyServer(function(input, output) {
   
   ## > Tidsserier ----
   # Reactive method for getting ppindex data
-  ppdata <- reactive({ return(ppindex) })
+  tsdata <- reactive({    
+    data <- copy(ppindex) %>%
+      setnames(c("UPDEDT", input$tsVar), c("Datum","plotVar")) %>%
+      filter(!is.na(plotVar) & Datum >= input$tsStartdate & Datum <= input$tsEnddate) %>%
+      mutate(Week = week(Datum), Month = month(Datum), Year = year(Datum))
+    
+    #     if (input$tsVar %in% c("PPINDEX", "AP7INDEX")) {
+    #       data = realIndex(
+    #         data,
+    #         dateCol = "Datum",
+    #         indexCol = "plotVar",
+    #         CPICol = "KPI",
+    #         dateStart = input$tsStartdate, dateEnd = input$tsEnddate
+    #       )
+    #     }
+    
+    # Date filtering
+    if (input$tsRes == 7) {
+      data <- data %>%
+        group_by(Year, Week) %>%
+        filter(Datum == min(Datum))
+    }
+    if (input$tsRes == 30) {
+      data <- data %>%
+        group_by(Year, Month) %>%
+      filter(Datum == max(Datum))
+    }    
+    
+    return(data)
+  })
   
   
   # Chart output
   output$fndTimeSeries <- renderChart2({
     # Get data
-    plotdata <- ppdata()
+    plotdata <- tsdata()
+    print(plotdata)
     
     # Define plot
-    pr1 <- nPlot(PPINDEX ~ UPDEDT, data = plotdata, type = "lineChart")
+    pr1 <- nPlot(y="plotVar", x="Datum", data = plotdata, type = "lineChart")
     pr1$xAxis(
       tickFormat = "#!function(d) {return d3.time.format('%Y-%m-%d')(new Date(d * 24 * 60 * 60 * 1000));}!#"
     )
+    
     
     return(pr1)
   })
@@ -205,9 +207,9 @@ shinyServer(function(input, output) {
       
       # Write file of the selected to tempfile
       if (input$fndFileFormat == "Excel") {
-        xlfun(ppdata(), temp_file)
+        xlfun(tsdata(), temp_file)
       } else {
-        write.csv(ppdata(), file = temp_file, row.names = FALSE)
+        write.csv(tsdata(), file = temp_file, row.names = FALSE)
       }
       
       # Read tempfile and return it to the user
@@ -216,30 +218,134 @@ shinyServer(function(input, output) {
     }
   )
   
+  ## > Index ----
+  # Reactive method for getting ppindex data
+  ixdata <- reactive({    
+    data <- copy(ppindex) %>%
+      setnames(c("UPDEDT", input$ixVar), c("Datum","plotVar")) %>%
+      filter(!is.na(plotVar) & Datum >= input$ixStartdate & Datum <= input$ixEnddate) %>%
+      mutate(Week = week(Datum), Month = month(Datum), Year = year(Datum))
+    
+    if (input$ixYearly) {
+      data = realIndexYearlyRate(
+        data,
+        dateCol = "Datum",
+        indexCol = "plotVar",
+        CPICol = "KPI",
+        dateStart = input$ixStartdate, dateEnd = input$ixEnddate
+      )
+    } else {
+      data = realIndex(
+        data,
+        dateCol = "Datum",
+        indexCol = "plotVar",
+        CPICol = "KPI",
+        dateStart = input$ixStartdate, dateEnd = input$ixEnddate
+      )
+    }
+    
+    
+    # Date filtering
+    if (input$ixRes == 7) {
+      data <- data %>%
+        group_by(Year, Week) %>%
+        filter(Datum == min(Datum))
+    }
+    if (input$ixRes == 30) {
+      data <- data %>%
+        group_by(Year, Month) %>%
+        filter(Datum == max(Datum))
+    }    
+    
+    return(data)
+  })
+  
+  
+  # Chart output
+  output$fndIndexSeries <- renderChart2({
+    # Get data
+    plotdata <- ixdata()
+    print(plotdata)
+    
+    # Define plot
+    if (input$ixYearly) {
+      pr1 <- nPlot(y="YEARLY", x="Datum", data = plotdata, type = "lineChart")
+    } else {
+      pr1 <- nPlot(y="plotVar", x="Datum", data = plotdata, type = "lineChart")
+    }
+    
+    pr1$xAxis(
+      tickFormat = "#!function(d) {return d3.time.format('%Y-%m-%d')(new Date(d * 24 * 60 * 60 * 1000));}!#"
+    )
+    
+    return(pr1)
+  })
+  
   
   ## > Värdeutveckling per kalenderår ----
+  # Reactive function to get yearly data
+  yrdata <- reactive({    
+    data <- copy(ppindex) %>%
+      setnames(c("UPDEDT", input$yrVar), c("Datum","plotVar")) %>%
+      # Select only relevant variables
+      select(Datum, plotVar) %>%
+      # Remove NAs
+      filter(!is.na(plotVar)) %>%
+      # Find timestamps
+      mutate(Year = year(Datum)) %>%
+      # Year 2000 and 2014 are incomplete so we exclude them
+      filter(Year > 2000 & Year < 2014) %>%
+      # Keep only first and last observation of the year
+      group_by(Year) %>%
+      filter(Datum %in% c(min(Datum), max(Datum)))
+    
+    if (input$yrDiff) {
+      data <- data %>%
+        # Calculate fund development and discard unneccessary rows
+        mutate(growth = plotVar / lag(plotVar, 1, default = plotVar[1]) - 1) %>%
+        filter(Datum == max(Datum))
+    } else {
+      data <- data %>%
+        mutate(growth = plotVar) %>%
+        filter(Datum == max(Datum))
+    }
+  })
+  
+  
   output$fndYearlyGrowth <- renderChart2({
     # Get data
-    plotdata <- ppdata() %>%
-      # Find year of datestamp
-      mutate(year = year(UPDEDT)) %>%
-      # Year 2000 and 2014 are incomplete so we exclude them
-      filter(year > 2000 & year < 2014) %>%
-      # Keep only first and last observation of the year
-      group_by(year) %>%
-      filter(UPDEDT %in% c(min(UPDEDT), max(UPDEDT))) %>%
-      # Calculate fund development and discard unneccessary rows
-      mutate(growth = PPINDEX / lag(PPINDEX, 1, default = PPINDEX[1]) - 1) %>%
-      filter(UPDEDT == max(UPDEDT))
-      
+    plotdata <- yrdata()
+    print(plotdata)
+
     # Define plot
-    pr2 <- nPlot(growth ~ year, data = plotdata, type = "multiBarChart")
-    pr2$yAxis(axisLabel = "\u00C5rlig tillväxt", width = 62)
+    pr2 <- nPlot(growth ~ Year, data = plotdata, type = "multiBarChart")
+    pr2$yAxis(axisLabel = "\u00C5rlig tillv\u00E5xt", width = 62)
     pr2$xAxis(axisLabel = "\u00C5r")
     
     return(pr2)
   })
   
+  ## > Tabeller ----
+  
+  tbldata <- reactive({
+#     browser()
+    dataFond[,input$tblVars, with = FALSE]
+#     browser()
+#     return(dataFond)
+  })
+  
+  output$ppTables <- renderDataTable({
+    ## TODO: Fyll i här!
+    tbldata()
+  },
+  options = list(
+    aLengthMenu = list(c(5, 10, 20, -1), c('5', '10', '20', 'All')),
+    bSortClasses = TRUE,
+    iDisplayLength = 10,
+    bFilter = list(
+      caseInsensitive = TRUE
+    )
+  ))
   
   ## DEV ----
 #   output$text <- renderText({

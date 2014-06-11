@@ -2,27 +2,6 @@
 
 library(data.table)
 
-### Exempel --------------------------------------------------------------------
-
-CPICol <- "KPI"
-dateCol  <-  'UPDEDT'
-indexCol  <- 'PPINDEX'
-
-dateStart <- as.Date('2000-12-13')
-dateEnd <- as.Date('2013-12-31')
-
-# Tabell värden
-yearlyRate(data,dateCol,indexCol,dateStart,dateEnd)
-realYearlyRate(data,dateCol,indexCol, CPICol, dateStart, dateEnd)
-
-# Index grafer
-index(data,dateCol,indexCol,dateStart, dateEnd)
-realIndex(data, dateCol, indexCol, CPICol, dateStart, dateEnd)
-
-# Årlig avkastningsgrafer
-indexYearlyRate(data,dateCol,indexCol,dateStart, dateEnd)
-realIndexYearlyRate(ppindex,dateCol,indexCol, CPICol, dateStart, dateEnd)
-
 
 
 ### Calculates the yearly return -----------------------------------------------
@@ -166,7 +145,8 @@ realIndex <- function(data, dateCol, indexCol, CPICol, dateStart, dateEnd) {
   data2[[realCol]] <- data2[[indexCol]]/data2[["INFLATION"]]*100
   
   # Subsetting columns to return
-  data2 <- data2[,c(dateCol, indexCol, "INFLATION", realCol),with=FALSE]
+  #   data2 <- data2[,c(dateCol, indexCol, "INFLATION", realCol),with=FALSE]
+  
   
   return(data2)
 }
@@ -226,7 +206,7 @@ realIndexYearlyRate <-  function(data, dateCol, indexCol, CPICol, dateStart, dat
   data2 <- data[data[[dateCol]] >= dateStart & data[[dateCol]] <= dateEnd]
   
   # Count the days from first observation
-  data2[,DAYS:=as.integer(UPDEDT-dateStart)]
+  data2[,DAYS:=as.integer(Datum-dateStart)]
   
   # Extract the first value for the Index and CPI
   v1 <- data[data[[dateCol]]==dateStart][,indexCol, with=FALSE][[1]]
@@ -261,7 +241,7 @@ realIndexYearlyRate <-  function(data, dateCol, indexCol, CPICol, dateStart, dat
   data2[,YEARLYINFLATION:= ifelse(DAYS<365,NA,YEARLYINFLATION)]
   
   # Subsetting columns to return
-  data2 <- data2[,c(dateCol, "YEARLY", "YEARLYREAL", "YEARLYINFLATION"),with=FALSE]
+#   data2 <- data2[,c(dateCol, "YEARLY", "YEARLYREAL", "YEARLYINFLATION"),with=FALSE]
   
   return(data2)
 }
