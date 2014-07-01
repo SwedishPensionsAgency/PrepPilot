@@ -60,7 +60,7 @@ shinyUI(
         fluidRow(
           column(3),
           column(2,
-                 select2Input(
+                 selectInput(
                    "variable",
                    "Variabel (y-axel)",
                    choices = c(
@@ -191,7 +191,7 @@ shinyUI(
           fluidRow(
             column(
               6,
-              select2Input(
+              selectInput(
                 "selXvar", "Primärvariabel",
                 choices = c(
                   "Internränta" = "IRR",
@@ -199,18 +199,18 @@ shinyUI(
                   "Garanterat belopp" = "GARANTBLP",
                   "Månatligt belopp" = "MONAMT"
                 ),
-                selected = "IRR",
-                options = list(width = "140px"), selectize = FALSE
+                selected = "IRR"
+                # options = list(width = "140px"), selectize = FALSE
               )
             ),
             column(
               6,
-              select2Input(
+              selectInput(
                 "selYear",
                 "Data för år",
                 choices = c(2000:2013), selected = 2010,
-                multiple = FALSE, # TODO: Implementera stöd för flera år åt gången
-                options = list(width = "140px"), selectize = FALSE
+                multiple = FALSE # TODO: Implementera stöd för flera år åt gången
+                # options = list(width = "140px"), selectize = FALSE
               )
             )
           ),
@@ -266,7 +266,7 @@ shinyUI(
         fluidRow(
           column(
             2, offset = 3,
-            select2Input(
+            selectInput(
               "tsVar",
               "Visa tidsserie för",
               choices = c(
@@ -283,7 +283,7 @@ shinyUI(
           ),
           column(
             2,
-            select2Input(
+            selectInput(
               "tsRes",
               "Upplösning för tidsserie",
               choices = c(
@@ -360,7 +360,7 @@ shinyUI(
         fluidRow(
           column(
             2, offset = 3,
-            select2Input(
+            selectInput(
               "ixVar",
               "Visa tidsserie för",
               choices = c(
@@ -382,7 +382,7 @@ shinyUI(
           ),
           column(
             2,
-            select2Input(
+            selectInput(
               "ixRes",
               "Upplösning för tidsserie",
               choices = c(
@@ -443,7 +443,7 @@ shinyUI(
         fluidRow(
           column(
             2, offset = 3,
-            select2Input(
+            selectInput(
               "yrVar",
               "Visa tidsserie för",
               choices = c(
@@ -500,13 +500,13 @@ shinyUI(
         fluidRow(
           column(
             6, offset = 3,
-            select2Input(
+            selectInput(
               "tblVars",
               "Välj kolumner att visa i tabellen",
               choices = names(dataFond),
               selected = names(dataFond)[1:5],
-              options = list(maximumSelectionSize = 6),
-              multiple = TRUE, selectize = FALSE
+#               options = list(maximumSelectionSize = 6),
+              multiple = TRUE, selectize = TRUE
             ),
             hr()
           )

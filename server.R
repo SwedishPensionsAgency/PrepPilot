@@ -327,13 +327,11 @@ shinyServer(function(input, output) {
   ## > Tabeller ----
   
   tbldata <- reactive({
-#     browser()
     dataFond[,input$tblVars, with = FALSE]
-#     browser()
-#     return(dataFond)
   })
   
-  output$ppTables <- renderDataTable({
+  output$ppTables <- renderDataTable(
+  {
     ## TODO: Fyll i här!
     tbldata()
   },
@@ -344,10 +342,6 @@ shinyServer(function(input, output) {
     bFilter = list(
       caseInsensitive = TRUE
     )
-  ))
-  
-  ## DEV ----
-#   output$text <- renderText({
-#     sprintf("The capital of %s is %s.", "a", input$click$)
-#   })
+  )
+  )
 })
