@@ -70,7 +70,7 @@ shinyUI(
                      "Månatligt belopp" = "MONAMT"
                    ),
                    selected = "IRR",
-                   selectize = FALSE
+                   selectize = TRUE
                  )
           ),
           column(2,
@@ -200,7 +200,7 @@ shinyUI(
                   "Månatligt belopp" = "MONAMT"
                 ),
                 selected = "IRR"
-                # options = list(width = "140px"), selectize = FALSE
+                # options = list(width = "140px"), selectize = TRUE
               )
             ),
             column(
@@ -210,7 +210,7 @@ shinyUI(
                 "Data för år",
                 choices = c(2000:2013), selected = 2010,
                 multiple = FALSE # TODO: Implementera stöd för flera år åt gången
-                # options = list(width = "140px"), selectize = FALSE
+                # options = list(width = "140px"), selectize = TRUE
               )
             )
           ),
@@ -278,7 +278,7 @@ shinyUI(
                 "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
               ),
               selected = "IRR",
-              selectize = FALSE
+              selectize = TRUE
             )
           ),
           column(
@@ -292,7 +292,7 @@ shinyUI(
                 "Månad" = 30
               ),
               selected = 30,
-              selectize = FALSE
+              selectize = TRUE
             )
           ),
           column(
@@ -372,7 +372,7 @@ shinyUI(
                 # "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
               ),
               selected = "IRR",
-              selectize = FALSE
+              selectize = TRUE
             ),
             checkboxInput(
               "ixYearly",
@@ -391,7 +391,7 @@ shinyUI(
                 "Månad" = 30
               ),
               selected = 7,
-              selectize = FALSE
+              selectize = TRUE
             )
           ),
           column(
@@ -455,7 +455,7 @@ shinyUI(
                 "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
               ),
               selected = "IRR",
-              selectize = FALSE
+              selectize = TRUE
             )
           ),
           column(
@@ -505,7 +505,7 @@ shinyUI(
               "Välj kolumner att visa i tabellen",
               choices = names(dataFond),
               selected = names(dataFond)[1:5],
-#               options = list(maximumSelectionSize = 6),
+              # options = list(maximumSelectionSize = 6),
               multiple = TRUE, selectize = TRUE
             ),
             hr()
