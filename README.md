@@ -1,7 +1,7 @@
 PrepPilot
 =========
 
-A project to create a prototype/mockup revamp of several statistical reports at Pensionsmyndigheten
+A project to create a prototype/mockup revamped versions of several statistical reports at Pensionsmyndigheten
 
 ### Requirements
 
