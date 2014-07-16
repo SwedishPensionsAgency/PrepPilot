@@ -5,7 +5,14 @@ library(shiny)
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage(
-    "Premiepensionen",
+    title = "Premiepensionen",
+    collapsable = TRUE,
+    
+    # If we want, we could add code here that would be displayed on all the pages.
+    # This could be useful for e.g. providing a logo beneath the menu, a 
+    # copyright footer or other nice CI elements.
+    # header = tagList(column(1), column(10, p("Test")), column(1)),
+    footer = tagList(column(1), column(10, p(tags$small("Denna prototyp är utvecklad av Pensionsmyndigheten och är under utveckling. Det finns ingen garanti för att uppgifterna i applikationen är tillförlitliga då dessa inte genomgått kvalitetssäkring och delvis bygger på fabricerad data.", style = "color: Grey;"))), column(1)),
     
     tabPanel(
       "Start", 
@@ -14,7 +21,7 @@ shinyUI(
       ),
       fluidRow(
         column(
-          6, offset = 3,
+          10, offset = 1,
           h2("Premiepensionsportalen: FK-rapporterna", style = "text-align: center;"),
           p("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
         )
@@ -27,10 +34,39 @@ shinyUI(
       tabPanel(
         "Lorem",
         
-        column(1),
-        
         ## > Lorem ----
-        fluidRow("Test"),
+        ## Controls
+        fluidRow(
+          column(
+            5, offset = 1,
+            uiOutput("controls")
+          ),
+          column(
+            5,
+            uiOutput("additionalControls")
+          )
+        ),
+        
+        ## Content
+        fluidRow(
+          column(
+            5, offset = 1,
+            dataTableOutput("table")
+          ),
+          column(
+            5
+          )
+        ),
+        
+        ## More content
+        fluidRow(
+          column(
+            5, offset = 1
+          ),
+          column(
+            5
+          )
+        ),
         
         column(1)
       ),
@@ -77,7 +113,7 @@ shinyUI(
         fluidRow("Amet"),
         
         column(1)
-      ),
+      )
     ),
     
     
