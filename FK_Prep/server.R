@@ -4,9 +4,9 @@ shinyServer(function(input, output) {
   
   ## Antalsuppgifter ----
   
-  ## > Lorem ----
+  ## > Antal pensionssparare ("pps") ----
   ## >> Data ----
-  loremData <- reactive({
+  ppsData <- reactive({
     # This is where we put all relevant data modifications
     print(input$measure)
     data <- switch(
@@ -35,20 +35,16 @@ shinyServer(function(input, output) {
       "AntalFondval" = base_data %>%
         mutate(AntalFondval = individDB['AntalFondval', c(2014,3)][[1]]) %>%
         filter(AntalFondval > 0),
+      "Kontovarde" = base_data %>%
+        mutate(Kontovarde = individDB['Kontovarde', c(2014,4)][[1]]),
       base_data # Default
     )
     data
   })
   
   ## >> Controls ----
-  output$controls <- renderUI({list(
-    column(3, selectInput(
-      "time",
-      "Tid",
-      choices = c(201401:201404),
-      selected = "201401"
-      )),
-    column(9, selectInput(
+  output$ppsControls <- renderUI({list(
+    column(12, wellPanel(selectInput(
       "measure",
       "M\u00e5tt",
       choices = c("Totalt antal pensionssparare" = "Prdcod100",
@@ -59,7 +55,7 @@ shinyServer(function(input, output) {
                   "Antal pensionssparare med traditionell f\u00f6rs\u00e4kring utan efterlevandeskydd under pensionstiden" = "Prdcod210",
                   "Antal pensionssparare med traditionell f\u00f6rs\u00e4kring under pensionstiden" = "Prdcod210220",
                   "Antal personer som bytt fonder f\u00f6reg\u00e5ende m\u00e5nad" = "AntalFondval",
-                  "Genomsnittlig beh\u00e5llning per pensionssparare under pensionstiden (marknadsv\u00e4rde)" = "I",
+                  "Genomsnittlig beh\u00e5llning per pensionssparare under pensionstiden (marknadsv\u00e4rde)" = "Ktovarde",
                   "Genomsnittlig beh\u00e5llning per pensionssparare f\u00f6r samtliga pensionssparare (marknadsv\u00e4rde)" = "J",
                   "Genomsnittlig beh\u00e5llning per pensionssparare f\u00f6re pensionstiden (marknadsv\u00e4rde)" = "K",
                   "Genomsnittlig intj\u00e4nad pensionsr\u00e4tt f\u00f6r premiepension per pensionssparare f\u00f6re pensionstiden" = "L",
@@ -67,10 +63,10 @@ shinyServer(function(input, output) {
                   "Totalt antal pensionssparare under pensionstiden" = "N"),
       selected = "Totalt antal pensionssparare",
       width = '100%'
-    ))
+    )))
   )})
   
-  output$additionalControls <- renderUI({list(
+  output$ppsAdditionalControls <- renderUI({list(
     column(3, selectInput(
       "grpvar",
       "Visa grupper",
@@ -81,10 +77,10 @@ shinyServer(function(input, output) {
       multiple = TRUE
     )),
     column(3, selectInput(
-      "test",
-      "TEST",
-      choices = c("Samtliga"),
-      selected = "Samtliga"
+      "time",
+      "Tid",
+      choices = c(201401:201404),
+      selected = "201401"
     )),
     column(3, selectInput(
       "kommun",
@@ -96,8 +92,8 @@ shinyServer(function(input, output) {
   )})
   
   ## >> Tables ----
-  output$table <- renderDataTable({
-    partTable(loremData(), byvar = input$grpvar, grpvar = "Aldgrp")
+  output$ppsTable <- renderDataTable({
+    partTable(ppsData(), byvar = input$grpvar, grpvar = "Aldgrp", sumrow = "top")
   },
   options = list(
     "bFilter" = FALSE,

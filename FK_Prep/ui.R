@@ -5,14 +5,14 @@ library(shiny)
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage(
-    title = "Premiepensionen",
+    title = "FK PreP",
     collapsable = TRUE,
     
     # If we want, we could add code here that would be displayed on all the pages.
     # This could be useful for e.g. providing a logo beneath the menu, a 
     # copyright footer or other nice CI elements.
     # header = tagList(column(1), column(10, p("Test")), column(1)),
-    footer = tagList(column(1), column(10, p(tags$small("Denna prototyp är utvecklad av Pensionsmyndigheten och är under utveckling. Det finns ingen garanti för att uppgifterna i applikationen är tillförlitliga då dessa inte genomgått kvalitetssäkring och delvis bygger på fabricerad data.", style = "color: Grey;"))), column(1)),
+    footer = tagList(column(1), column(10, p(tags$small("Denna applikation är en prototyp utvecklad av Pensionsmyndigheten och är för närvarande under utveckling. Det finns ingen garanti för att uppgifterna i applikationen är tillförlitliga då dessa inte genomgått kvalitetssäkring och delvis bygger på fabricerad data.", style = "color: Grey;"))), column(1)),
     
     tabPanel(
       "Start", 
@@ -27,35 +27,44 @@ shinyUI(
         )
       )
     ),
-    
+        
     ## Antalsuppgifter ----
     navbarMenu(
       "Antalsuppgifter",
+
+      ## > Antal pensionssparare ----
       tabPanel(
-        "Lorem",
+        "Antal pensionssparare",
         
-        ## > Lorem ----
         ## Controls
         fluidRow(
           column(
             5, offset = 1,
-            uiOutput("controls")
+            uiOutput("ppsControls")
           ),
           column(
             5,
-            uiOutput("additionalControls")
+            uiOutput("ppsAdditionalControls")
           )
         ),
+        
+        hr(),
         
         ## Content
         fluidRow(
           column(
             5, offset = 1,
-            dataTableOutput("table")
+            dataTableOutput("ppsTable")
           ),
           column(
-            5
-          )
+            5,
+            tabsetPanel(
+              type = "pills",
+              position = "above",
+              tabPanel("Graf1"),
+              tabPanel("Graf2"),
+              tabPanel("Graf3")
+            ))
         ),
         
         ## More content
@@ -71,23 +80,27 @@ shinyUI(
         column(1)
       ),
       
+      "Header",
+      
+      ## > Fondval ----
       tabPanel(
-        "Ipsum",
+        "Fondval",
         
         column(1),
         
-        ## > Ipsum ----
         fluidRow("Test"),
         
         column(1)
       ),
       
+      "-----",
+      
+      ## > Dolor ----
       tabPanel(
         "Dolor",
         
         column(1),
         
-        ## > Dolor ----
         fluidRow("Test"),
         
         column(1)
@@ -109,7 +122,7 @@ shinyUI(
         
         column(1),
         
-        ## > Lorem ----
+        ## > Amet ----
         fluidRow("Amet"),
         
         column(1)
