@@ -13,9 +13,13 @@ Run <- function(app = NULL) {
 
 #' Create a partitioned frequency table from panel data
 #' 
+#' A flexible function to create a summary table which can be horizontally divided into subgroups
+#' 
+#' @param byvar A character vector of variable names by which to divide the data into subgroups
+#' @param grpvar The 
 #' @export
 
-partTable <- function(data, byvar = NULL, grpvar = NULL, freqvar = NULL, sumname = "total") {
+partTable <- function(data, byvar = NULL, grpvar = NULL, freqvar = NULL, sumname = "Total", sumrow = c("top", "bottom")) {
   # Start with totals column
   maindata <- data %>%
     regroup(as.list(grpvar)) %>%
@@ -47,8 +51,34 @@ partTable <- function(data, byvar = NULL, grpvar = NULL, freqvar = NULL, sumname
     }
   }
   
+  # Sum row
+  if (!is.null(sumrow)) {
+    sums <- list()
+    sums[[grpvar]] <- sumname
+    sums <- append(sums, colSums(maindata %>% select(2:ncol(maindata))))
+        
+    levels(maindata[[grpvar]]) <- c(levels(maindata[[grpvar]]), sumname)
+    
+    if (sumrow[[1]] == "bottom") {
+      maindata <- rbind(maindata, sums)
+    } else if (sumrow[[1]] == "top") {
+      maindata <- rbind(sums, maindata)
+    }
+  }
+  
   # Rename totals column and return
   setnames(maindata, "tot", sumname)
   return(maindata)
 }
 
+
+
+#' Set a default value for an object
+#'
+#' This function sets the value of an object to a default value if it is not defined.
+#' @params x object
+#' @params y object
+#' @export
+`%||%` <- function(x, y){
+  if (is.null(x)) y else x
+}
