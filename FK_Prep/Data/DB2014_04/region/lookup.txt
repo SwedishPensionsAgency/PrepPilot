@@ -1,0 +1,21 @@
+1	Blekinge
+2	Dalarna
+3	Gotland
+4	Gvleborg
+5	Halland
+6	Jmtland
+7	Jnkping
+8	Kalmar
+9	Kronoberg
+10	Norrbotten
+11	Skne
+12	Stockholm
+13	Sdermanland
+14	Uppsala
+15	Vrmland
+16	Vsterbotten
+17	Vsternorrland
+18	Vstmanland
+19	Vstra Gtaland
+20	rebro
+21	stergtland

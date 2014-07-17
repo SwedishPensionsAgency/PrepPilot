@@ -16,6 +16,8 @@ require(pmreports) # install_stash("pmreports")
 require(stringr)
 
 ## Data ----
+
+## Individdata
 # individDB <- cdb("Data//DB2014_04")
 load("Data//Individdata.DB")
  
@@ -24,7 +26,8 @@ system.time(
     individDB['Fodelsear'],
     individDB['Fodelsemanad'],
     individDB['Kon'],
-    individDB['Lever', c(2014, 4)]
+    individDB['Lever', c(2014, 4)],
+    individDB['municipality']
   )) %>% 
     mutate(Alder = 2014 - Fodelsear,
            Aldgrp = cut(Alder, seq(0, 120, 5))
@@ -32,22 +35,17 @@ system.time(
     rename(c("Lever___2014___4" = "Lever"))
 )
 
+## Fonddata
+# fondDB <- cdb("Data//FNDDB")
+load("Data//Fonddata.DB")
 
-# birthYears <- sort(unique(base_data$FODAR))
-# entryYears <- sort(unique(base_data$INTJANANDEAR))
-# 
-# # Fonddata: ppindex
-# load("Data//tidsserie.RData")
-# # tidsserie.RData contains a data.frame called "tidsserie" so we rename it
-# ppindex <- tbl_dt(tidsserie); rm(tidsserie)
-# ppindex[,UPDEDT := as.Date(as.character(UPDEDT))]
-# 
-# # Fonddata: 
-# load("Data//dataFond.RData")
+## Fond/individdata
+load("Data//FondIndivid//MV_2014_4.RData")
 
 
 ## Functions ---.-
 source("functions.R")
+source("../R/utils.R")
 
 ## > Create variable list for dplyr select() operations ----
 varlist = function(x) {
