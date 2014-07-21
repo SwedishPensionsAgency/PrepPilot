@@ -16,10 +16,4 @@ devtools::install_github("SwedishPensionsAgency/Coldbir")
 ```
 
 ### Running the apps
-Run the apps included using the following code:
-
-```r
-## PreP-Pilot
-shiny::runApp("Prep") # This will change your working directory for now
-
-```
+To run the apps, simply run the code in the included `run.R`script.
