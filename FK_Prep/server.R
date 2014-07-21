@@ -1,11 +1,11 @@
 library(shiny)
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
   ## Antalsuppgifter ----
   
   ## > Antal pensionssparare ("pps") ----
-  ## >> Data ----
+  ## > Antal pensionssparare >> Data ----
   ppsData <- reactive({
     # This is where we put all relevant data modifications
     print(input$measure)
@@ -42,7 +42,7 @@ shinyServer(function(input, output) {
     data
   })
   
-  ## >> Controls ----
+  ## > Antal pensionssparare >> Controls ----
   output$ppsControls <- renderUI({list(
     column(12, wellPanel(selectInput(
       "measure",
@@ -66,7 +66,7 @@ shinyServer(function(input, output) {
     )))
   )})
   
-  output$ppsAdditionalControls <- renderUI({list(
+  output$ppsAdditionalControls <- renderUI({tagList(
     column(3, selectInput(
       "grpvar",
       "Visa grupper",
@@ -91,13 +91,98 @@ shinyServer(function(input, output) {
     column(3)
   )})
   
-  ## >> Tables ----
+  ## > Antal pensionssparare >> Tables ----
   output$ppsTable <- renderDataTable({
     partTable(ppsData(), byvar = input$grpvar, grpvar = "Aldgrp", sumrow = "top")
   },
   options = list(
     "bFilter" = FALSE,
     "iDisplayLength" = 20,
-    "bLengthChange" = FALSE))
+    "bLengthChange" = FALSE)
+  )
   
+  ## > Antal pensionssparare >> Graphs ----
+  output$ppsPlot <- renderPlot({
+    p <- ggplot(base_data, aes(x = Aldgrp, y = Fodelsemanad)) + geom_boxplot()
+    
+    p
+  })
+  
+  
+  ## > Fondval ("fvl") ----
+  ## > Fondval >> Data ----
+  fvlData <- reactive({
+    # This is where we put all relevant data modifications
+    print(input$fvlMeasure)
+    data <- base_id
+    
+    print(input$fvlMunicipality )
+    
+    if (!"Samtliga" %in% input$fvlMunicipality ) {
+      data <- data %>% filter(municipality %in% input$fvlMunicipality)
+    }
+    
+    data
+  })
+  
+  ## > Fondval >> Controls ----
+  output$fvlControls <- renderUI({list(
+    column(12, wellPanel(selectInput(
+      "fvlMeasure",
+      "M\u00e5tt",
+      choices = c("Antal valda fonder" = 'Antal',
+                  "Marknadsv\u00e4rde SEK" = 'MV'),
+      selected = "Antal valda fonder",
+      width = '100%',
+      selectize = TRUE
+    )))
+  )})
+  
+  output$fvlAdditionalControls <- renderUI({tagList(
+    column(3, selectInput(
+      "fvlByvar",
+      "Horisontell indelning",
+      choices = c("Kategori (bred)" = "Kategori_bred",
+                  "Kategori (smal)" = "Kategori_smal",
+                  "Fondtyp" = "Fondtyp"),
+      selected = "Kategori (bred)",
+      multiple = FALSE
+    )),
+    column(3, selectInput(
+      "fvlGrpvar",
+      "Vertikal indelning",
+      choices = c("Kategori (bred)" = "Kategori_bred",
+                  "Kategori (smal)" = "Kategori_smal",
+                  "Fondtyp" = "Fondtyp"),
+      selected = "Fondtyp",
+      multiple = FALSE
+    )),
+    column(3, selectizeInput(
+      "fvlMunicipality",
+      "Kommun",
+      choices = c("Samtliga", sort(as.character(unique(base_id$municipality)))),
+      selected = "Samtliga",
+      multiple = TRUE,
+      options = list(
+        'maxItems' = 5
+      )
+    )),
+    column(3)
+  )})
+  
+  ## > Fondval >> Tables ----
+  output$fvlTable <- renderDataTable({
+    tblInput <- switch(
+      input$fvlMeasure,
+      'Antal' = list(.fun = NULL, funvar = NULL),
+      list(.fun = sum, funvar = input$fvlMeasure)
+    )
+
+    partTable(fvlData(), byvar = input$fvlByvar, grpvar = input$fvlGrpvar, sumrow = "top", .fun = tblInput$.fun, funvar = tblInput$funvar)
+  },
+  options = list(
+    "bFilter" = FALSE,
+    "iDisplayLength" = 20,
+    "bLengthChange" = FALSE)
+  )
 })
