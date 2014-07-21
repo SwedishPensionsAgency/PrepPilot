@@ -11,10 +11,13 @@ mfdata <- tbl_df(data.frame(
   aldgrp = LETTERS[sample(c(1:3), samplesize, replace = TRUE)]
 ))
 
-# data <- mfdata; byvar = "kon"; grpvar = NULL
-# data <- mfdata; byvar = "kon"; grpvar = "utb"
-data <- mfdata; byvar = c("kon", "aldgrp"); grpvar = "utb"
-# data <- mfdata; byvar = c("kon", "aldgrp"); grpvar = NULL
+data <- copy(mfdata)
+
+byvar = "kon"; grpvar = NULL
+byvar = "kon"; grpvar = "utb"
+byvar = c("kon", "aldgrp"); grpvar = "utb"; funvar = NULL; .fun = NULL
+byvar = c("kon", "aldgrp"); grpvar = NULL; funvar = NULL; .fun = NULL
+byvar = c("kon", "aldgrp"); grpvar = "utb"; funvar = "someval"; .fun = mean
 
 
 ## Create benchmarks
@@ -22,5 +25,8 @@ require(lineprof)
 
 source("R/utils.R")
 
-bm <- lineprof(partTable(data = mfdata, byvar = byvar, grpvar = grpvar))
+
+bm <- lineprof(
+  partTable(data = data, byvar = byvar, grpvar = grpvar, funvar = funvar, .fun = .fun)
+)
 shine(bm)

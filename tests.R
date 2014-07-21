@@ -34,3 +34,8 @@ realIndex(ppindex, dateCol, indexCol, CPICol, dateStart, dateEnd)
 # Årlig avkastningsgrafer
 indexYearlyRate(ppindex,dateCol,indexCol,dateStart, dateEnd)
 realIndexYearlyRate(ppindex,dateCol,indexCol, CPICol, dateStart, dateEnd)
+
+
+
+
+
