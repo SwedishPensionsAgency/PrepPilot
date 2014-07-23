@@ -3,7 +3,7 @@ library(shiny)
 shinyServer(function(input, output, session) {
   
   ## Antalsuppgifter ----
-  
+
   ## > Antal pensionssparare ("pps") ----
   ## > Antal pensionssparare >> Data ----
   ppsData <- reactive({
@@ -41,6 +41,25 @@ shinyServer(function(input, output, session) {
     )
     data
   })
+  
+  geoData <- reactive({
+    print(input$regionInput)
+    data <- tbl_df(data.frame(
+      region = individDB['region'][[1]],
+      lat = individDB['lat'][[1]],
+      long = individDB['long'][[1]]
+    )) %>% 
+      filter(region %in% input$regionInput) %>%
+      group_by(region) %>%
+      summarise(freq = n(), lat = max(lat), long = min(long)) %>%
+      arrange(region) %>%
+      mutate(latlong = paste(lat, long, sep = ":")) %>%
+      select(-(lat:long))
+    
+    print(data)
+    return(data)
+  })
+  
   
   ## > Antal pensionssparare >> Controls ----
   output$ppsControls <- renderUI({list(
@@ -87,7 +106,7 @@ shinyServer(function(input, output, session) {
       "Kommun",
       choices = c("Samtliga"),
       selected = "Samtliga"
-    )),
+    )),         
     column(3)
   )})
   
@@ -107,6 +126,39 @@ shinyServer(function(input, output, session) {
     
     p
   })
+  
+  output$geoControls <- renderUI({
+    selectInput(multiple = TRUE,
+                label = "L\u00e4n",
+                inputId = "regionInput",
+                choices = sort(unique(individDB['region'][[1]])),
+                selected = sort(unique(individDB['region'][[1]])),
+                width = "100%")
+  })
+  
+  output$gvisGeoChart <- renderGvis({
+    geoData()
+    
+    obj <- gvisGeoChart(
+      data = geoData(),
+      locationvar = "latlong",
+      sizevar="freq",
+      colorvar="freq", 
+      chartid = "hybrid",
+      options=list(
+        region="SE"
+        , showTip=TRUE
+        , width="530px"
+        , height="500px"
+        , resolution="provinces"
+        , colorAxis = "{colors: ['#e7711c', '#4374e0']}"
+        #, colorAxis="{values:[200000,400000,600000,800000, 1000000],
+        #            colors:[\'red', \'pink\', \'blue', \'orange',\'green']}"
+      )
+    )
+    return(obj)
+  })  
+  
   
   
   ## > Fondval ("fvl") ----
@@ -185,4 +237,5 @@ shinyServer(function(input, output, session) {
     "iDisplayLength" = 20,
     "bLengthChange" = FALSE)
   )
+  
 })

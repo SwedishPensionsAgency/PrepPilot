@@ -61,16 +61,27 @@ navbarPage(
             type = "pills",
             selected = "Totalmått",
             position = "above",
-            
-            tabPanel("LÄGG KARTAN HÄR",
-                     fluidRow(p("Lägg kart-appen här."))),
+            tabPanel(
+                     "googleVis",
+                     column(4,
+                       htmlOutput("gvisGeoChart")
+                       #hr(),
+                       #htmlOutput("gvisGeoMap")
+                       #hr(),
+                       #htmlOutput("gvisMap")
+                       ),     
+
+                     column(width = 3,offset = 4,                      
+                            uiOutput("geoControls")
+                            )
+  
+            ),
             tabPanel("Totalmått",
                      # fluidRow(plotOutput("ppsPlot")),
                      fluidRow(plotOutput("ppsText"))
             )
           ))
       ),
-      
       ## More content
       fluidRow(
         column(
@@ -169,7 +180,6 @@ navbarPage(
   ),
   
   singleton(tags$head(
-    tags$style(
-      "h2 { font-family: 'Helvetica Neue', Helvetica; font-weight: 300; }"
-    )))
+    tags$style("h2 { font-family: 'Helvetica Neue', Helvetica; font-weight: 300; }")    
+    ))
 )

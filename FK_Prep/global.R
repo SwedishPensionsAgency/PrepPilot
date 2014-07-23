@@ -14,11 +14,12 @@ require(ggthemes)
 require(XLConnect)
 require(pmreports) # install_stash("pmreports")
 require(stringr)
+require(googleVis)
 
 ## Data ----
 
 ## Individdata
-# individDB <- cdb("Data//DB2014_04")
+individDB <- cdb("Data//DB2014_04")
 load("Data//Individdata.DB")
  
 system.time(
@@ -36,12 +37,11 @@ system.time(
 )
 
 ## Fonddata
-# fondDB <- cdb("Data//FNDDB")
+fondDB <- cdb("Data//FNDDB")
 load("Data//Fonddata.DB")
 
 ## Fond/individdata
 load("Data//FondIndivid//MV_2014_4.RData")
-
 
 ## Functions ---.-
 source("functions.R")
