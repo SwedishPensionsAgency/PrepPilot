@@ -31,3 +31,15 @@
 31	Vstra Gtaland
 32	rebro
 33	stergtland
+34	Gvleborg
+35	Jmtland
+36	Jnkping
+37	Skne
+38	Sdermanland
+39	Vrmland
+40	Vsterbotten
+41	Vsternorrland
+42	Vstmanland
+43	Vstra Gtaland
+44	rebro
+45	stergtland

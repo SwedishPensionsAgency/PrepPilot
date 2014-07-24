@@ -62,19 +62,20 @@ navbarPage(
             selected = "Totalmått",
             position = "above",
             tabPanel(
-                     "googleVis",
-                     column(4,
-                       htmlOutput("gvisGeoChart")
-                       #hr(),
-                       #htmlOutput("gvisGeoMap")
-                       #hr(),
-                       #htmlOutput("gvisMap")
-                       ),     
-
-                     column(width = 3,offset = 4,                      
-                            uiOutput("geoControls")
-                            )
-  
+              "Kartdiagram",
+               tabsetPanel(
+                type = "tabs",
+                position = "above",
+                tabPanel("gvisGeoChart",
+                         column(4,htmlOutput("gvisGeoChart"))
+                ),
+                tabPanel("readShapePoly", 
+                         column(4,plotOutput("renderMunicipalityShape", height = "600px", width = "600px"))
+                ),
+                column(width = 3,offset = 4,                      
+                       uiOutput("geoControls")
+                )
+              ) 
             ),
             tabPanel("Totalmått",
                      # fluidRow(plotOutput("ppsPlot")),

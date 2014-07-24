@@ -43,21 +43,22 @@ shinyServer(function(input, output, session) {
   })
   
   geoData <- reactive({
-    print(input$regionInput)
-    data <- tbl_df(data.frame(
-      region = individDB['region'][[1]],
-      lat = individDB['lat'][[1]],
-      long = individDB['long'][[1]]
-    )) %>% 
+    coordinates = tbl_df(geoTblRegion)   
+    ppsDataGeo <- left_join(ppsData(), coordinates, by = "region")
+    
+    ppsDataGeo <- tbl_df(data.frame(
+      region = ppsDataGeo['region'][[1]],
+      lat = ppsDataGeo['lat'][[1]],
+      long = ppsDataGeo['long'][[1]]
+    )) %>%
       filter(region %in% input$regionInput) %>%
-      group_by(region) %>%
-      summarise(freq = n(), lat = max(lat), long = min(long)) %>%
+      group_by(region) %>%      
+      summarise(freq = n(), lat = max(ave(lat)), long = max(ave(long))) %>%
       arrange(region) %>%
       mutate(latlong = paste(lat, long, sep = ":")) %>%
-      select(-(lat:long))
+      select(region:latlong)
     
-    print(data)
-    return(data)
+    return(ppsDataGeo)
   })
   
   
@@ -158,6 +159,11 @@ shinyServer(function(input, output, session) {
     )
     return(obj)
   })  
+  
+  output$renderMunicipalityShape <- renderPlot({
+    geoShapeMunicipality <- readShapeSpatial("Data/geoCounty_SCB/alla_lan.shp")
+    plot(geoShapeMunicipality)
+  })
   
   
   

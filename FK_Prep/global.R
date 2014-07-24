@@ -15,6 +15,7 @@ require(XLConnect)
 require(pmreports) # install_stash("pmreports")
 require(stringr)
 require(googleVis)
+require(maptools)
 
 ## Data ----
 
@@ -28,7 +29,7 @@ system.time(
     individDB['Fodelsemanad'],
     individDB['Kon'],
     individDB['Lever', c(2014, 4)],
-    individDB['municipality']
+    individDB['region']
   )) %>% 
     mutate(Alder = 2014 - Fodelsear,
            Aldgrp = cut(Alder, seq(0, 120, 5))

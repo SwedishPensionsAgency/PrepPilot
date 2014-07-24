@@ -12,6 +12,8 @@ if (!"region" %in% names(individDB$variables)) {
   individDB[] <- geotbl %>% select(region)
 }
 
+geoTblRegion <- read.csv("Data/coordinate_Region.csv", head = TRUE, sep = ";")
+
 
 ## Fonddata ----
 fnd_data <- tbl_df(data.frame(
