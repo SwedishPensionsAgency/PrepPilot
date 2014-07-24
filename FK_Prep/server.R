@@ -159,7 +159,7 @@ shinyServer(function(input, output, session) {
     )
     return(obj)
   })  
-  
+    
   output$renderMunicipalityShape <- renderPlot({
     geoShapeMunicipality <- readShapeSpatial("Data/geoCounty_SCB/alla_lan.shp")
     plot(geoShapeMunicipality)
