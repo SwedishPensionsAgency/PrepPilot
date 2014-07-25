@@ -139,18 +139,38 @@ shinyServer(function(input, output, session) {
   
   output$gvisGeoChart <- renderGvis({
     geoData()
-    
     obj <- gvisGeoChart(
       data = geoData(),
       locationvar = "latlong",
       sizevar="freq",
-      colorvar="freq", 
-      chartid = "hybrid",
+      colorvar="freq",
+      hovervar = "region",
+      chartid = "gvisGeoChart1",
       options=list(
         region="SE"
         , showTip=TRUE
-        , width="530px"
-        , height="500px"
+        #, width="530px"
+        #, height="500px"
+        , resolution="provinces"
+        , colorAxis = "{colors: ['#e7711c', '#4374e0']}"
+        #, colorAxis="{values:[200000,400000,600000,800000, 1000000],
+        #            colors:[\'red', \'pink\', \'blue', \'orange',\'green']}"
+      )
+    )
+    return(obj)
+  })  
+  
+  output$gvisGeoChart2 <- renderGvis({
+    geoData()
+    obj <- gvisGeoChart(
+      data = geoData(),
+      colorvar="freq",
+      chartid = "gvisGeoChart2",
+      options=list(
+        region="SE"
+        , showTip=TRUE
+        #, width="530px"
+        #, height="500px"
         , resolution="provinces"
         , colorAxis = "{colors: ['#e7711c', '#4374e0']}"
         #, colorAxis="{values:[200000,400000,600000,800000, 1000000],

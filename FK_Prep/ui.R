@@ -66,9 +66,12 @@ navbarPage(
                tabsetPanel(
                 type = "tabs",
                 position = "above",
-                tabPanel("gvisGeoChart",
+                tabPanel("gvisGeoChartLatLong",
                          column(4,htmlOutput("gvisGeoChart"))
-                ),
+                ),    
+                tabPanel("gvisGeoChartProvince",
+                         column(4,htmlOutput("gvisGeoChart2"))
+                ),                  
                 tabPanel("readShapePoly", 
                          column(4,plotOutput("renderMunicipalityShape", height = "600px", width = "600px"))
                 ),
