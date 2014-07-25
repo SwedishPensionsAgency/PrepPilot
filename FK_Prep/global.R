@@ -54,4 +54,3 @@ varlist = function(x) {
   x = str_replace_all(x,'\\.','\\\\.')
   return(x)
 }
-

@@ -42,21 +42,30 @@ shinyServer(function(input, output, session) {
     data
   })
   
+  base_data
+  
   geoData <- reactive({
     coordinates = tbl_df(geoTblRegion)   
     ppsDataGeo <- left_join(ppsData(), coordinates, by = "region")
     
+    #convert selection to province code instead of text
+    #todo: throws exception on join
+    regionSelection <- left_join(tbl_df(data.frame(regionText = input$regionInput))
+                                ,coordinates, 
+                                by = "regionText")
+    
     ppsDataGeo <- tbl_df(data.frame(
       region = ppsDataGeo['region'][[1]],
+      regionText = ppsDataGeo['regionText'][[1]],
       lat = ppsDataGeo['lat'][[1]],
       long = ppsDataGeo['long'][[1]]
     )) %>%
-      filter(region %in% input$regionInput) %>%
-      group_by(region) %>%      
+      filter(region %in% regionSelection$region) %>%
+      group_by(region, regionText) %>%      
       summarise(freq = n(), lat = max(ave(lat)), long = max(ave(long))) %>%
       arrange(region) %>%
-      mutate(latlong = paste(lat, long, sep = ":")) %>%
-      select(region:latlong)
+      mutate(latlong = paste(lat, long, sep = ":")) #%>%
+      #select(region:regionText:latlong)
     
     return(ppsDataGeo)
   })
@@ -124,27 +133,27 @@ shinyServer(function(input, output, session) {
   ## > Antal pensionssparare >> Graphs ----
   output$ppsPlot <- renderPlot({
     p <- ggplot(base_data, aes(x = Aldgrp, y = Fodelsemanad)) + geom_boxplot()
-    
     p
   })
   
   output$geoControls <- renderUI({
+    geoTblRegion['regionText'][[1]]
     selectInput(multiple = TRUE,
                 label = "L\u00e4n",
                 inputId = "regionInput",
-                choices = sort(unique(individDB['region'][[1]])),
-                selected = sort(unique(individDB['region'][[1]])),
+                choices = sort(unique(geoTblRegion['regionText'][[1]])),
+                selected = sort(unique(geoTblRegion['regionText'][[1]])),
                 width = "100%")
   })
   
-  output$gvisGeoChart <- renderGvis({
+  output$gvisGeoChart1 <- renderGvis({
     geoData()
     obj <- gvisGeoChart(
       data = geoData(),
       locationvar = "latlong",
       sizevar="freq",
       colorvar="freq",
-      hovervar = "region",
+      hovervar = "regionText",
       chartid = "gvisGeoChart1",
       options=list(
         region="SE"
@@ -161,20 +170,17 @@ shinyServer(function(input, output, session) {
   })  
   
   output$gvisGeoChart2 <- renderGvis({
-    geoData()
     obj <- gvisGeoChart(
-      data = geoData(),
-      colorvar="freq",
-      chartid = "gvisGeoChart2",
-      options=list(
+      data = geoData()
+      , colorvar="freq"
+      , hovervar="regionText"
+      , chartid = "gvisGeoChart2"
+      , options=list(
         region="SE"
         , showTip=TRUE
-        #, width="530px"
-        #, height="500px"
         , resolution="provinces"
         , colorAxis = "{colors: ['#e7711c', '#4374e0']}"
-        #, colorAxis="{values:[200000,400000,600000,800000, 1000000],
-        #            colors:[\'red', \'pink\', \'blue', \'orange',\'green']}"
+        , enableRegionInteractivity = TRUE
       )
     )
     return(obj)

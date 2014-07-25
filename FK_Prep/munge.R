@@ -7,8 +7,6 @@ require(tidyr)
 ## Geodata ----
 if (!"region" %in% names(individDB$variables)) {
   geotbl <- fread("Data//coordinate.csv") %>% tbl_dt()
-  setnames(geotbl, "city", "region")
-  
   individDB[] <- geotbl %>% select(region)
 }
 

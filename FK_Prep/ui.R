@@ -67,7 +67,7 @@ navbarPage(
                 type = "tabs",
                 position = "above",
                 tabPanel("gvisGeoChartLatLong",
-                         column(4,htmlOutput("gvisGeoChart"))
+                         column(4,htmlOutput("gvisGeoChart1"))
                 ),    
                 tabPanel("gvisGeoChartProvince",
                          column(4,htmlOutput("gvisGeoChart2"))
