@@ -5,12 +5,16 @@ library(shiny)
 # Define UI for application that draws a histogram
 navbarPage(
   title = "FK PreP",
+  #inverse = TRUE,
   collapsable = TRUE,
-  
   # If we want, we could add code here that would be displayed on all the pages.
   # This could be useful for e.g. providing a logo beneath the menu, a 
   # copyright footer or other nice CI elements.
-  # header = tagList(column(1), column(10, p("Test")), column(1)),
+  header = tagList(
+                  uiOutput("ribbon"), 
+                  column(width = 1, offset = 1,div(id = "logo", img(src="img/PM_Logo_neg_farg_150mm150dpi.png", width = 80, height = 50))),
+                  hr()
+          ),
   footer = tagList(column(1), column(10, p(tags$small("Denna applikation är en prototyp utvecklad av Pensionsmyndigheten och är för närvarande under utveckling. Det finns ingen garanti för att uppgifterna i applikationen är tillförlitliga då dessa inte genomgått kvalitetssäkring och delvis bygger på fabricerad data.", style = "color: Grey;"))), column(1)),
   
   tabPanel(
@@ -72,9 +76,9 @@ navbarPage(
                 tabPanel("gvisGeoChartProvince",
                          column(4,htmlOutput("gvisGeoChart2"))
                 ),                  
-                tabPanel("readShapePoly", 
-                         column(4,plotOutput("renderMunicipalityShape", height = "600px", width = "600px"))
-                ),
+#                 tabPanel("readShapePoly", 
+#                          column(4,plotOutput("renderMunicipalityShape", height = "600px", width = "600px"))
+#                 ),
                 column(width = 3,offset = 4,                      
                        uiOutput("geoControls")
                 )
@@ -183,7 +187,10 @@ navbarPage(
     tabPanel("Källkod")
   ),
   
-  singleton(tags$head(
-    tags$style("h2 { font-family: 'Helvetica Neue', Helvetica; font-weight: 300; }")    
+  singleton(
+    tags$head(
+      tags$link(rel="stylesheet", type="text/css", href="css/site.css")
+    , tags$link(rel="stylesheet", type="text/css", href="css/ribbon.css")
+    , tags$link(rel="stylesheet", type="text/css", href="css/dataTable.css")
     ))
 )

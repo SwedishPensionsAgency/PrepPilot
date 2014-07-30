@@ -95,6 +95,10 @@ shinyServer(function(input, output, session) {
     )))
   )})
   
+  output$ribbon <- renderUI({
+          div(class="ribbon-banner", "Beta")
+  })
+  
   output$ppsAdditionalControls <- renderUI({tagList(
     column(3, selectInput(
       "grpvar",
@@ -126,7 +130,7 @@ shinyServer(function(input, output, session) {
   },
   options = list(
     "bFilter" = FALSE,
-    "iDisplayLength" = 20,
+    "iDisplayLength" = 25,
     "bLengthChange" = FALSE)
   )
   
@@ -158,8 +162,8 @@ shinyServer(function(input, output, session) {
       options=list(
         region="SE"
         , showTip=TRUE
-        #, width="530px"
-        #, height="500px"
+        , height = 500
+        , width = 500        
         , resolution="provinces"
         , colorAxis = "{colors: ['#e7711c', '#4374e0']}"
         #, colorAxis="{values:[200000,400000,600000,800000, 1000000],
@@ -178,6 +182,8 @@ shinyServer(function(input, output, session) {
       , options=list(
         region="SE"
         , showTip=TRUE
+        , height = 500
+        , width = 500
         , resolution="provinces"
         , colorAxis = "{colors: ['#e7711c', '#4374e0']}"
         , enableRegionInteractivity = TRUE
