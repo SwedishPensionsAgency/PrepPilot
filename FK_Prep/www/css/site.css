@@ -1,0 +1,57 @@
+/*BODY*/
+html {
+  height: 100%;
+}
+
+body {
+background: rgb(255,252,249); /* Old browsers */
+background: -moz-linear-gradient(top,  rgba(255,252,249,1) 79%, rgba(255,252,249,1) 87%, rgba(255,236,214,1) 96%, rgba(255,213,163,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(79%,rgba(255,252,249,1)), color-stop(87%,rgba(255,252,249,1)), color-stop(96%,rgba(255,236,214,1)), color-stop(100%,rgba(255,213,163,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  rgba(255,252,249,1) 79%,rgba(255,252,249,1) 87%,rgba(255,236,214,1) 96%,rgba(255,213,163,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  rgba(255,252,249,1) 79%,rgba(255,252,249,1) 87%,rgba(255,236,214,1) 96%,rgba(255,213,163,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  rgba(255,252,249,1) 79%,rgba(255,252,249,1) 87%,rgba(255,236,214,1) 96%,rgba(255,213,163,1) 100%); /* IE10+ */
+background: linear-gradient(to bottom,  rgba(255,252,249,1) 79%,rgba(255,252,249,1) 87%,rgba(255,236,214,1) 96%,rgba(255,213,163,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fffcf9', endColorstr='#ffd5a3',GradientType=0 ); /* IE6-9 */
+}
+
+#logo, #img {
+    position: absolute;
+    top: 0px;
+    /*left: 0px;*/
+}
+
+
+/*NAV-PILLS*/
+.nav-pills>li > a{
+   background: #EEEEEE;
+  
+}
+
+/*SELECTIZE MULTI*/
+/*.multi  > .items div{
+  background: green;
+  width: 5px;
+}
+*/
+
+/*HEADINGS*/
+h2 { font-family: 'Helvetica Neue', Helvetica; font-weight: 300; }
+
+
+.navbar-inner{
+  background-color: #D7D3D3;
+  background-image:-moz-linear-gradient(top,#D7D3D3,#D7D3D3);
+  background-image:-webkit-linear-gradient(top,#D7D3D3,#D7D3D3); 
+  }
+
+/* Adjust Menu (red) text color, (Garamond) font-family, (1.5em) font-size  */
+.navbar .nav > li > a{
+  color:          #000000;
+}
+
+
+/*TABCONTENT*/
+/*workaround för att hantera kartdiagram i layout per 20140730*/
+.tab-content{
+    overflow-y:hidden;
+  }
