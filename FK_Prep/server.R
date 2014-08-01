@@ -190,6 +190,23 @@ shinyServer(function(input, output, session) {
       )
     )
     return(obj)
+  })
+  
+  #function to update leaflet map object
+  output$leafletmap <- renderGvis({
+    data <- geoData()
+    map <- createLeafletMap(session, 'map')
+    map$clearShapes()
+    for(i in 1:nrow(geoData())){
+      map$addCircle(
+        geoData()$lat[i],
+        geoData()$long[i],
+        sqrt(geoData()$freq[i]) *800 / max(5, input$map_zoom)^2,
+        geoData()$regionText[i],
+        list(stroke=FALSE, fill=TRUE, fillOpacity=0.4, color='#FF0000')
+      )
+    }        
+    return(NULL)
   })  
     
   output$renderMunicipalityShape <- renderPlot({

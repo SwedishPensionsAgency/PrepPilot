@@ -69,13 +69,26 @@ navbarPage(
               "Kartdiagram",
                tabsetPanel(
                 type = "tabs",
-                position = "above",
-                tabPanel("gvisGeoChartLatLong",
-                         column(4,htmlOutput("gvisGeoChart1"))
-                ),    
+                position = "above",                
                 tabPanel("gvisGeoChartProvince",
                          column(4,htmlOutput("gvisGeoChart2"))
-                ),                  
+                ),
+                tabPanel("leaflet",
+                         htmlOutput("leafletmap") #this function will update the leaflet object,
+                         #create the leaflet object
+                         column(1,leafletMap("map", width="300px", height="400px",
+                                             initialTileLayer = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
+                                             initialTileLayerAttribution = HTML('Maps by <a href="http://www.mapbox.com/">Mapbox</a>'),
+                                             options=list(
+                                               center = c(63.5 , 16,1),
+                                               zoom = 4,
+                                               maxBounds = list(list(38, 0), list(88,40)) # Show SE only
+                                             )))                        
+                         
+                ),
+                tabPanel("gvisGeoChartLatLong",
+                         column(4,htmlOutput("gvisGeoChart1"))
+                ),                 
 #                 tabPanel("readShapePoly", 
 #                          column(4,plotOutput("renderMunicipalityShape", height = "600px", width = "600px"))
 #                 ),

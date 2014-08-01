@@ -15,7 +15,8 @@ require(XLConnect)
 require(pmreports) # install_stash("pmreports")
 require(stringr)
 require(googleVis)
-require(maptools)
+#require(maptools)
+require(leaflet)
 
 ## Data ----
 
