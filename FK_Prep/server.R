@@ -509,26 +509,19 @@ shinyServer(function(input, output, session) {
   })
   
   geoData <- reactive({
-    coordinates = tbl_df(geoTblRegion)   
-    ppsDataGeo <- left_join(ppsData(), coordinates, by = "region")
+    coordinates <- tbl_df(geoTblRegion)
+    ppsDataGeo <- tbl_df(ppsData()) %>%
+      mutate(regionText = region, regionText = as.character(regionText)) %>%
+      select(-region) %>%
+      left_join(coordinates, by = "regionText") %>%
+      select(region, regionText, lat, long)
     
-    #convert selection to province code instead of text
-    #todo: throws exception on join
-    regionSelection <- left_join(tbl_df(data.frame(regionText = input$regionInput))
-                                ,coordinates, 
-                                by = "regionText")
-    
-    ppsDataGeo <- tbl_df(data.frame(
-      region = ppsDataGeo['region'][[1]],
-      regionText = ppsDataGeo['regionText'][[1]],
-      lat = ppsDataGeo['lat'][[1]],
-      long = ppsDataGeo['long'][[1]]
-    )) %>%
-      filter(region %in% regionSelection$region) %>%
-      group_by(region, regionText) %>%      
+    ppsDataGeo <- ppsDataGeo %>%
+      filter(regionText %in% input$regionInput) %>%
+      group_by(region, regionText) %>%
       summarise(freq = n(), lat = max(ave(lat)), long = max(ave(long))) %>%
       arrange(region) %>%
-      mutate(latlong = paste(lat, long, sep = ":")) #%>%
+      mutate(latlong = paste(lat, long, sep = ":"))
       #select(region:regionText:latlong)
     
     return(ppsDataGeo)
@@ -599,18 +592,12 @@ shinyServer(function(input, output, session) {
   )
   
   ## > Antal pensionssparare >> Graphs ----
-  output$ppsPlot <- renderPlot({
-    p <- ggplot(base_data, aes(x = Aldgrp, y = Fodelsemanad)) + geom_boxplot()
-    p
-  })
-  
   output$geoControls <- renderUI({
-    geoTblRegion['regionText'][[1]]
     selectInput(multiple = TRUE,
-                label = "L\u00e4n",
+                label = "Län",
                 inputId = "regionInput",
-                choices = sort(unique(geoTblRegion['regionText'][[1]])),
-                selected = sort(unique(geoTblRegion['regionText'][[1]])),
+                choices = sort(unique(as.character(geoTblRegion['regionText'][[1]]))),
+                selected = sort(unique(as.character(geoTblRegion['regionText'][[1]]))),
                 width = "100%")
   })
   
@@ -661,15 +648,19 @@ shinyServer(function(input, output, session) {
     data <- geoData()
     map <- createLeafletMap(session, 'map')
     map$clearShapes()
+    
+#     browser()
+
     for(i in 1:nrow(geoData())){
       map$addCircle(
-        geoData()$lat[i],
-        geoData()$long[i],
-        sqrt(geoData()$freq[i]) *800 / max(5, input$map_zoom)^2,
-        geoData()$regionText[i],
+        data$lat[i],
+        data$long[i],
+        sqrt(data$freq[i]) *800 / max(5, input$map_zoom)^2,
+        data$regionText[i],
         list(stroke=FALSE, fill=TRUE, fillOpacity=0.4, color='#FF0000')
       )
-    }        
+    }
+    
     return(NULL)
   })  
     
@@ -684,10 +675,7 @@ shinyServer(function(input, output, session) {
   ## > Fondval >> Data ----
   fvlData <- reactive({
     # This is where we put all relevant data modifications
-    print(input$fvlMeasure)
     data <- base_id
-    
-    print(input$fvlMunicipality )
     
     if (!"Samtliga" %in% input$fvlMunicipality ) {
       data <- data %>% filter(municipality %in% input$fvlMunicipality)

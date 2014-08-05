@@ -214,67 +214,52 @@ navbarPage(
       
       ## Controls
       fluidRow(
-        column(
-          5, offset = 1,
-          uiOutput("ppsControls")
-        ),
-        column(
-          5,
-          uiOutput("ppsAdditionalControls")
-        )
+        column(5, offset = 1, uiOutput("ppsControls")),
+        column(5, uiOutput("ppsAdditionalControls"))
       ),
       
       hr(),
       
       ## Content
       fluidRow(
-        column(
-          5, offset = 1,
-          dataTableOutput("ppsTable")
-        ),
+        column(5, offset = 1, dataTableOutput("ppsTable")),
         column(
           5,
           tabsetPanel(
             type = "pills",
-            selected = "Totalmått",
-            position = "above",
+            position = "above",                
+            
             tabPanel(
-              "Kartdiagram",
-               tabsetPanel(
-                type = "tabs",
-                position = "above",                
-                tabPanel("gvisGeoChartProvince",
-                         column(4,htmlOutput("gvisGeoChart2"))
-                ),
-                tabPanel("leaflet",
-                         htmlOutput("leafletmap"), #this function will update the leaflet object,
-                         #create the leaflet object
-                         column(1, leafletMap("map", width="300px", height="400px",
-                                             initialTileLayer = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
-                                             initialTileLayerAttribution = HTML('Maps by <a href="http://www.mapbox.com/">Mapbox</a>'),
-                                             options=list(
-                                               center = c(63.5 , 16,1),
-                                               zoom = 4,
-                                               maxBounds = list(list(38, 0), list(88,40)) # Show SE only
-                                             )))                        
-                         
-                ),
-                tabPanel("gvisGeoChartLatLong",
-                         column(4,htmlOutput("gvisGeoChart1"))
-                ),                 
-#                 tabPanel("readShapePoly", 
-#                          column(4,plotOutput("renderMunicipalityShape", height = "600px", width = "600px"))
-#                 ),
-                column(width = 3,offset = 4,                      
-                       uiOutput("geoControls")
-                )
-              ) 
+              "gvisGeoChartProvince",
+              column(4, htmlOutput("gvisGeoChart2"))
             ),
-            tabPanel("Totalmått",
-                     # fluidRow(plotOutput("ppsPlot")),
-                     fluidRow(plotOutput("ppsText"))
-            )
-          ))
+            
+            tabPanel(
+              "leaflet",
+              htmlOutput("leafletmap"), #this function will update the leaflet object,
+              #create the leaflet object
+              column(
+                1, leafletMap(
+                  "map", width="300px", height="400px",
+                  initialTileLayer = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
+                  initialTileLayerAttribution = HTML('Maps by <a href="http://www.mapbox.com/">Mapbox</a>'),
+                  options=list(
+                    center = c(63.5 , 16,1),
+                    zoom = 4,
+                    maxBounds = list(list(38, 0), list(88,40)) # Show SE only
+                  )))
+            ),
+            tabPanel(
+              "gvisGeoChartLatLong",
+              column(4, htmlOutput("gvisGeoChart1"))
+            ),
+            # tabPanel(
+            #   "readShapePoly", 
+            #   column(4,plotOutput("renderMunicipalityShape", height = "600px", width = "600px"))
+            # ),
+            column(width = 3, offset = 4, uiOutput("geoControls"))
+          )
+        )
       ),
       ## More content
       fluidRow(
