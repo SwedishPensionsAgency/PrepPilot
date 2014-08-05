@@ -21,29 +21,53 @@ require(leaflet)
 ## Data ----
 
 ## Individdata
-individDB <- cdb("Data//DB2014_04")
+# individDB <- cdb("Data//DB2014_04")
+# save(individDB, file = "Data//Individdata.DB")
 load("Data//Individdata.DB")
  
-system.time(
-  base_data <- tbl_df(data.table(
-    individDB['Fodelsear'],
-    individDB['Fodelsemanad'],
-    individDB['Kon'],
-    individDB['Lever', c(2014, 4)],
-    individDB['region']
-  )) %>% 
-    mutate(Alder = 2014 - Fodelsear,
-           Aldgrp = cut(Alder, seq(0, 120, 5))
-    ) %>%
-    rename(c("Lever___2014___4" = "Lever"))
-)
+base_data <- tbl_df(data.table(
+  individDB['Fodelsear'],
+  individDB['Fodelsemanad'],
+  individDB['Kon'],
+  individDB['Lever', c(2014, 4)],
+  individDB['region']
+)) %>% 
+  mutate(Alder = 2014 - Fodelsear,
+         Aldgrp = cut(Alder, seq(0, 120, 5))
+  ) %>%
+  plyr::rename(c("Lever___2014___4" = "Lever"))
 
-## Fonddata
-fondDB <- cdb("Data//FNDDB")
+geoTblRegion <- read.csv("Data/coordinate_Region.csv", head = TRUE, sep = ";")
+
+
+## Fonddata ----
+# fondDB <- cdb("Data//FNDDB")
+# save(fondDB, file = "Data//Fonddata.DB")
 load("Data//Fonddata.DB")
+
+fnd_data <- tbl_df(data.frame(
+  FNDID = fondDB['FNDID'][[1]],
+  Fondnamn = fondDB['FONDNAMN', c(2014, 4)][[1]],
+  Fondtyp = fondDB['FONDTYP', c(2014, 4)][[1]],
+  Kategori_bred = fondDB['KATEGORI_BRED', c(2014, 4)][[1]],
+  Kategori_smal = fondDB['KATEGORI_SMAL', c(2014, 4)][[1]]
+))
+
 
 ## Fond/individdata
 load("Data//FondIndivid//MV_2014_4.RData")
+
+
+base_id <- base_data %>%
+  mutate(PEDALID = individDB['PEDALID'][[1]]) %>%
+  
+  # Join to cross table
+  left_join(MV_2014_4, by = "PEDALID") %>%
+  filter(!is.na(FNDID)) %>%
+  
+  # Join to fund table
+  left_join(fnd_data, by = "FNDID")
+
 
 ## Functions ---.-
 source("functions.R")
