@@ -96,7 +96,7 @@ navbarPage(
       
       # Graph
       fluidRow(
-        column(10, offset = 1, showOutput("ftsTimeSeries","nvd3"))
+        column(10, offset = 1, showOutput("ftsChart","nvd3"))
       ),
       
       # Controls
@@ -105,7 +105,7 @@ navbarPage(
           10, offset = 1,
           hr(),
           sidebarPanel(
-            downloadButton("ftsDownloadData", "Ladda ned data"),
+            downloadButton("ftsDownloadHandler", "Ladda ned data"),
             radioButtons("ftsFileFormat", "Filformat", c("CSV", "Excel"), selected = "CSV")
           )
         )

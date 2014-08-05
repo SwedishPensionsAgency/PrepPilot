@@ -251,18 +251,18 @@ shinyServer(function(input, output, session) {
   ## > Index ("fix") ----
   ## > Index >> Data ----
   fixData <- reactive({    
-    data <- copy(ppindex) %>%
-      setnames(c("UPDEDT", input$ixVar), c("Datum","plotVar")) %>%
-      filter(!is.na(plotVar) & Datum >= input$ixStartdate & Datum <= input$ixEnddate) %>%
+    data <- copy(tidsserie) %>%
+      setnames(c("UPDEDT", input$fixVar), c("Datum","plotVar")) %>%
+      filter(!is.na(plotVar) & Datum >= input$fixStartdate & Datum <= input$fixEnddate) %>%
       mutate(Week = week(Datum), Month = month(Datum), Year = year(Datum))
     
-    if (input$ixYearly) {
+    if (input$fixYearly) {
       data = realIndexYearlyRate(
         data,
         dateCol = "Datum",
         indexCol = "plotVar",
         CPICol = "KPI",
-        dateStart = input$ixStartdate, dateEnd = input$ixEnddate
+        dateStart = input$fixStartdate, dateEnd = input$fixEnddate
       )
     } else {
       data = realIndex(
@@ -270,34 +270,103 @@ shinyServer(function(input, output, session) {
         dateCol = "Datum",
         indexCol = "plotVar",
         CPICol = "KPI",
-        dateStart = input$ixStartdate, dateEnd = input$ixEnddate
+        dateStart = input$fixStartdate, dateEnd = input$fixEnddate
       )
     }
     
     # Date filtering
-    if (input$ixRes == 7) {
+    if (input$fixRes == 7) {
       data <- data %>%
         group_by(Year, Week) %>%
         filter(Datum == min(Datum))
     }
-    if (input$ixRes == 30) {
+    if (input$fixRes == 30) {
       data <- data %>%
         group_by(Year, Month) %>%
         filter(Datum == max(Datum))
-    }    
+    }
+    
+    data <- data %>% mutate(Datum = as.double(Datum))
     
     return(data)
   })
   
+  ## > Index >> Text ----
+  output$fixText <- renderUI({tagList(
+    h2("Indexserier", style="text-align: center;"),
+    tags$small(
+      p("Här visas värdeutvecklingen för fondrörelsen, dvs alla fonder inklusive Premiesparfonden och AP7 Såfa sedan systemets start 2000-12-13."),
+      p("Tidsviktad avkastning, TVA mäter avkastningen på en genomsnittlig krona som sattes in i premiepensionssystemet 2000-12-13. Premiepensionsindex kan jämföras med marknadsindex och enskilda fonders avkastning. Rabatten på fondavgiften, myndighetens avgift och arvsvinster är inte medräknade."),
+      p("Real avkastning = avkastning/inflation (KPI)", br(),
+        "Med årsavkastning menas genomsnittlig avkastning sedan start.")
+    ),
+    hr()
+  )})
+  
+  ## > Index >> Controls ----
+  output$fixControls <- renderUI({tagList(
+    fluidRow(
+      column(
+        2, offset = 1,
+        selectInput(
+          "fixVar",
+          "Visa tidsserie för",
+          choices = c(
+            # "Internränta" = "IRR",
+            # "Internränta (real)" = "IRRReal",
+            "Premiepensionsindex" = "PPINDEX",
+            "AP7-index" = "AP7INDEX"
+            # "Marknadsvärde, fondrörelsen" = "MVFondrorelse",
+            # "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
+          ),
+          selected = "IRR",
+          selectize = TRUE
+        ),
+        checkboxInput(
+          "fixYearly",
+          "Beräkna årsavkastning",
+          value = FALSE
+        )
+      ),
+      column(
+        2,
+        selectInput(
+          "fixRes",
+          "Upplösning för tidsserie",
+          choices = c(
+            "Dag" = 1,
+            "Vecka" = 7,
+            "Månad" = 30
+          ),
+          selected = 30,
+          selectize = TRUE
+        )
+      ),
+      column(
+        2,
+        dateInput(
+          "fixStartdate", "Välj tidsperiod", value = "2000-12-13",
+          min = "2000-12-13", max = "2014-04-30", weekstart = 1,
+          startview = "year",
+          language = "sv"
+        ),
+        dateInput(
+          "fixEnddate", "", value = "2014-04-30",
+          min = "2000-12-13", max = "2014-04-30", weekstart = 1,
+          startview = "year",
+          language = "sv"
+        )
+      )
+    )
+  )})
   
   ## > Index >> Chart ----
-  output$fixIndexSeries <- renderChart2({
+  output$fixChart <- renderChart2({
     # Get data
     plotdata <- fixData()
-    # print(plotdata)
     
     # Define plot
-    if (input$ixYearly) {
+    if (input$fixYearly) {
       pr1 <- nPlot(y="YEARLY", x="Datum", data = plotdata, type = "lineChart")
     } else {
       pr1 <- nPlot(y="plotVar", x="Datum", data = plotdata, type = "lineChart")
