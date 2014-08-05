@@ -360,8 +360,8 @@ navbarPage(
   
   singleton(
     tags$head(
-      tags$link(rel="stylesheet", type="text/css", href="css/site.css")
-    , tags$link(rel="stylesheet", type="text/css", href="css/ribbon.css")
+      #tags$link(rel="stylesheet", type="text/css", href="css/site.css")
+     tags$link(rel="stylesheet", type="text/css", href="css/ribbon.css")
     , tags$link(rel="stylesheet", type="text/css", href="css/dataTable.css")
     ))
 )
