@@ -10,17 +10,17 @@ navbarPage(
   # If we want, we could add code here that would be displayed on all the pages.
   # This could be useful for e.g. providing a logo beneath the menu, a 
   # copyright footer or other nice CI elements.
-  header = tagList(
-                  uiOutput("ribbon"), 
-                  column(width = 1, offset = 1,div(id = "logo", img(src="img/PM_Logo_neg_farg_150mm150dpi.png", width = 80, height = 50))),
-                  hr()
-          ),
+  #   header = tagList(
+  #                   uiOutput("ribbon"), 
+  #                   column(width = 1, offset = 1,div(id = "logo", img(src="img/PM_Logo_neg_farg_150mm150dpi.png", width = 80, height = 50))),
+  #                   hr()
+  #           ),
   footer = tagList(
     column(10, offset = 1, p(tags$small("Denna applikation är en prototyp utvecklad av Pensionsmyndigheten och är för närvarande under utveckling. Det finns ingen garanti för att uppgifterna i applikationen är tillförlitliga då dessa inte genomgått kvalitetssäkring och delvis bygger på fabricerad data.", style = "color: Grey;")))
   ),
   
   tabPanel(
-    "Start", 
+    title = img(src="img/PM_logo.jpg", width = 35, style = "padding: 0px 0px"), 
     fluidRow(
       column(6, offset = 3, img(src="img/PM_logo.jpg"))
     ),
