@@ -1,5 +1,9 @@
 ## REQUIREMENTS FOR THE PrepPilot SHINY APP ##
 
+## Set options
+options("shiny.launch.browser" = TRUE)
+options(shiny.reactlog = TRUE)
+
 ## Libraries ----
 require(shiny) # >= 0.9
 require(Coldbir) # install_github("SwedishPensionsAgency/Coldbir")
@@ -37,7 +41,7 @@ base_data <- tbl_df(data.table(
   ) %>%
   plyr::rename(c("Lever___2014___4" = "Lever"))
 
-geoTblRegion <- read.csv("Data/coordinate_Region.csv", head = TRUE, sep = ";")
+geoTblRegion <- read.csv("Data//coordinate_Region.csv", head = TRUE, sep = ";")
 
 
 ## Fonddata ----
@@ -45,6 +49,7 @@ geoTblRegion <- read.csv("Data/coordinate_Region.csv", head = TRUE, sep = ";")
 # save(fondDB, file = "Data//Fonddata.DB")
 load("Data//Fonddata.DB")
 load("Data//dataFond.RData")
+load("Data//tidsserie.RData")
 
 fnd_data <- tbl_df(data.frame(
   FNDID = fondDB['FNDID'][[1]],
