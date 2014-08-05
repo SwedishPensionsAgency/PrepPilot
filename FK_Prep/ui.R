@@ -4,7 +4,7 @@ library(shiny)
 
 # Define UI for application that draws a histogram
 navbarPage(
-  title = "FK PreP",
+  title = "",
   #inverse = TRUE,
   collapsable = TRUE,
   # If we want, we could add code here that would be displayed on all the pages.
@@ -74,9 +74,9 @@ navbarPage(
                          column(4,htmlOutput("gvisGeoChart2"))
                 ),
                 tabPanel("leaflet",
-                         htmlOutput("leafletmap") #this function will update the leaflet object,
+                         htmlOutput("leafletmap"), #this function will update the leaflet object,
                          #create the leaflet object
-                         column(1,leafletMap("map", width="300px", height="400px",
+                         column(1, leafletMap("map", width="300px", height="400px",
                                              initialTileLayer = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
                                              initialTileLayerAttribution = HTML('Maps by <a href="http://www.mapbox.com/">Mapbox</a>'),
                                              options=list(
