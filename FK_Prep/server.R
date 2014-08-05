@@ -452,7 +452,6 @@ shinyServer(function(input, output, session) {
   })
   
   ## > Tabeller ----
-  
   tblData <- reactive({
     dataFond[,input$tblVars, with = FALSE]
   })
@@ -476,7 +475,6 @@ shinyServer(function(input, output, session) {
   ## > Antal pensionssparare >> Data ----
   ppsData <- reactive({
     # This is where we put all relevant data modifications
-    print(input$measure)
     data <- switch(
       c(input$measure),
       "Prdcod100" = base_data %>%
@@ -509,8 +507,6 @@ shinyServer(function(input, output, session) {
     )
     data
   })
-  
-  base_data
   
   geoData <- reactive({
     coordinates = tbl_df(geoTblRegion)   
