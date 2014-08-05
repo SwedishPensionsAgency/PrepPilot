@@ -15,7 +15,9 @@ navbarPage(
                   column(width = 1, offset = 1,div(id = "logo", img(src="img/PM_Logo_neg_farg_150mm150dpi.png", width = 80, height = 50))),
                   hr()
           ),
-  footer = tagList(column(1), column(10, p(tags$small("Denna applikation är en prototyp utvecklad av Pensionsmyndigheten och är för närvarande under utveckling. Det finns ingen garanti för att uppgifterna i applikationen är tillförlitliga då dessa inte genomgått kvalitetssäkring och delvis bygger på fabricerad data.", style = "color: Grey;"))), column(1)),
+  footer = tagList(
+    column(10, offset = 1, p(tags$small("Denna applikation är en prototyp utvecklad av Pensionsmyndigheten och är för närvarande under utveckling. Det finns ingen garanti för att uppgifterna i applikationen är tillförlitliga då dessa inte genomgått kvalitetssäkring och delvis bygger på fabricerad data.", style = "color: Grey;")))
+  ),
   
   tabPanel(
     "Start", 
@@ -30,6 +32,43 @@ navbarPage(
       )
     )
   ),
+  
+  
+  ## Kontoutveckling ----
+  navbarMenu(
+    "Kontoutveckling",
+    
+    ## > Fördelning, individuella konton ----
+    tabPanel(
+      "Fördelning, individuella konton",
+      
+      # Text
+      fluidRow(
+        column(
+          10, offset = 1,
+          uiOutput("ktoText")
+        )
+      ),
+      
+      # Graph
+      fluidRow(
+        column(
+          10, offset = 1,
+          plotOutput("ktoPlot")
+        )
+      ),
+      
+      # Controls
+      fluidRow(
+        uiOutput("ktoControls")
+      )
+    ),
+    
+    
+    ## > Tabeller ----
+    tabPanel("Tabeller")
+  ),
+  
   
   ## Antalsuppgifter ----
   navbarMenu(
