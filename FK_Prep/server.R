@@ -372,11 +372,11 @@ shinyServer(function(input, output, session) {
   })
   
   
-  ## > Värdeutveckling per kalenderår ----
-  # Reactive function to get yearly data
-  yrdata <- reactive({    
-    data <- copy(ppindex) %>%
-      setnames(c("UPDEDT", input$yrVar), c("Datum","plotVar")) %>%
+  ## > Värdeutveckling per kalenderår ("cyr") ----
+  ## > Värdeutveckling per kalenderår >> Data ----
+  cyrData <- reactive({    
+    data <- copy(tidsserie) %>%
+      setnames(c("UPDEDT", input$cyrVar), c("Datum","plotVar")) %>%
       # Select only relevant variables
       select(Datum, plotVar) %>%
       # Remove NAs
@@ -389,7 +389,7 @@ shinyServer(function(input, output, session) {
       group_by(Year) %>%
       filter(Datum %in% c(min(Datum), max(Datum)))
     
-    if (input$yrDiff) {
+    if (input$cyrDiff) {
       data <- data %>%
         # Calculate fund development and discard unneccessary rows
         mutate(growth = plotVar / lag(plotVar, 1, default = plotVar[1]) - 1) %>%
@@ -401,11 +401,47 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # Render plot
-  output$fndYearlyGrowth <- renderChart2({
+  ## > Värdeutveckling per kalenderår >> Text ----
+  output$cyrText <- renderUI({tagList(
+    h2("Värdeutveckling i Premiepensionsindex på årsbasis", style="text-align: center;"),
+    p("Staplarna nedan visar utvecklingen i Premiepensionsindex per kalenderår."),
+    p("För musen över en stapel för att se värdet för ett givet år."),
+    hr()
+  )})
+  
+  ## > Värdeutveckling per kalenderår >> Controls ----
+  output$cyrControls <- renderUI({tagList(
+    column(
+      2, offset = 1,
+      selectInput(
+        "cyrVar",
+        "Visa tidsserie för",
+        choices = c(
+          "Internränta" = "IRR",
+          "Internränta (real)" = "IRRReal",
+          "Premiepensionsindex" = "PPINDEX",
+          "AP7-index" = "AP7INDEX",
+          "Marknadsvärde, fondrörelsen" = "MVFondrorelse",
+          "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
+        ),
+        selected = "IRR",
+        selectize = TRUE
+      )
+    ),
+    column(
+      2,
+      checkboxInput(
+        "cyrDiff",
+        "Visa årsdifferens",
+        value = TRUE
+      )
+    )
+  )})
+  
+  ## > Värdeutveckling per kalenderår >> Chart ----
+  output$cyrChart <- renderChart2({
     # Get data
-    plotdata <- yrdata()
-    # print(plotdata)
+    plotdata <- cyrData()
     
     # Define plot
     pr2 <- nPlot(growth ~ Year, data = plotdata, type = "multiBarChart")

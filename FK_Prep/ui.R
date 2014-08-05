@@ -203,54 +203,23 @@ navbarPage(
       
       # Text
       fluidRow(
-        column(3),
         column(
-          6,
-          h2("Värdeutveckling i Premiepensionsindex på årsbasis", style="text-align: center;"),
-          p("Staplarna nedan visar utvecklingen i Premiepensionsindex per kalenderår."),
-          p("För musen över en stapel för att se värdet för ett givet år."),
-          hr()
-        ),
-        column(3)
+          10, offset = 1,
+          uiOutput('cyrText')
+        )
       ),
       
       # Controls
       fluidRow(
-        column(
-          2, offset = 3,
-          selectInput(
-            "yrVar",
-            "Visa tidsserie för",
-            choices = c(
-              "Internränta" = "IRR",
-              "Internränta (real)" = "IRRReal",
-              "Premiepensionsindex" = "PPINDEX",
-              "AP7-index" = "AP7INDEX",
-              "Marknadsvärde, fondrörelsen" = "MVFondrorelse",
-              "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
-            ),
-            selected = "IRR",
-            selectize = TRUE
-          )
-        ),
-        column(
-          2,
-          checkboxInput(
-            "yrDiff",
-            "Visa årsdifferens",
-            value = TRUE
-          )
-        )
+        uiOutput('cyrControls')
       ),
       
       # hr()
-      fluidRow(column(6, offset = 3, hr())),
+      fluidRow(column(10, offset = 1, hr())),
       
       # Graph
       fluidRow(
-        column(3),
-        column(6, showOutput("fndYearlyGrowth","nvd3")),
-        column(3)
+        column(10, offset = 1, showOutput("cyrChart","nvd3"))
       )
     ),
     
