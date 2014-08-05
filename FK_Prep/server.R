@@ -106,32 +106,25 @@ shinyServer(function(input, output, session) {
   ## > Tidsserier ("fts") ----
   ## > Tidsserier >> Data ----
   ftsData <- reactive({    
-    data <- copy(ppindex) %>%
-      setnames(c("UPDEDT", input$tsVar), c("Datum","plotVar")) %>%
-      filter(!is.na(plotVar) & Datum >= input$tsStartdate & Datum <= input$tsEnddate) %>%
-      mutate(Week = week(Datum), Month = month(Datum), Year = year(Datum))
-    
-    #     if (input$tsVar %in% c("PPINDEX", "AP7INDEX")) {
-    #       data = realIndex(
-    #         data,
-    #         dateCol = "Datum",
-    #         indexCol = "plotVar",
-    #         CPICol = "KPI",
-    #         dateStart = input$tsStartdate, dateEnd = input$tsEnddate
-    #       )
-    #     }
+    data <- copy(tidsserie) %>%
+      setnames(c("UPDEDT", input$ftsVar), c("Datum", "plotVar")) %>%
+      filter(!is.na(plotVar) & Datum >= input$ftsStartdate & Datum <= input$ftsEnddate) %>%
+      mutate(Week = week(Datum), Month = month(Datum), Year = year(Datum)) %>%
+      tbl_df()
     
     # Date filtering
-    if (input$tsRes == 7) {
+    if (input$ftsRes == 7) {
       data <- data %>%
         group_by(Year, Week) %>%
         filter(Datum == min(Datum))
     }
-    if (input$tsRes == 30) {
+    if (input$ftsRes == 30) {
       data <- data %>%
         group_by(Year, Month) %>%
         filter(Datum == max(Datum))
-    }    
+    }
+    
+    data <- data %>% mutate(Datum = as.integer(Datum))
     
     return(data)
   })
@@ -151,7 +144,7 @@ shinyServer(function(input, output, session) {
     column(
       2, offset = 1,
       selectInput(
-        "tsVar",
+        "ftsVar",
         "Visa tidsserie för",
         choices = c(
           "Internränta" = "IRR",
@@ -168,7 +161,7 @@ shinyServer(function(input, output, session) {
     column(
       2,
       selectInput(
-        "tsRes",
+        "ftsRes",
         "Upplösning för tidsserie",
         choices = c(
           "Dag" = 1,
@@ -182,13 +175,13 @@ shinyServer(function(input, output, session) {
     column(
       2,
       dateInput(
-        "tsStartdate", "Välj tidsperiod", value = "2000-12-13",
+        "ftsStartdate", "Välj tidsperiod", value = "2000-12-13",
         min = "2000-12-13", max = "2014-04-30", weekstart = 1,
         startview = "year",
         language = "sv"
       ),
       dateInput(
-        "tsEnddate", "", value = "2014-04-30",
+        "ftsEnddate", "", value = "2014-04-30",
         min = "2000-12-13", max = "2014-04-30", weekstart = 1,
         startview = "year",
         language = "sv"
@@ -199,7 +192,7 @@ shinyServer(function(input, output, session) {
   ## > Tidsserier >> Chart ----
   output$ftsChart <- renderChart2({
     # Get data
-    plotdata <- tsdata()
+    plotdata <- ftsData()
     
     # Define plot
     pr1 <- nPlot(y="plotVar", x="Datum", data = plotdata, type = "lineChart")
@@ -207,17 +200,16 @@ shinyServer(function(input, output, session) {
       tickFormat = "#!function(d) {return d3.time.format('%Y-%m-%d')(new Date(d * 24 * 60 * 60 * 1000));}!#"
     )
     
-    
     return(pr1)
   })
   
   ## > Tidsserier >> Download handler ----
   output$ftsDownloadHandler <- downloadHandler(
     filename = function() {
-      paste('fonddata-', Sys.Date(), '.csv', sep='')
+      paste('fonddata-', Sys.Date(), ifelse(input$ftsFileFormat == "Excel", 'xlsx', '.csv'), sep='')
     },
     content = function(con) {
-      temp_file <- paste0(tempfile(),".xlsx")
+      temp_file <- tempfile(fileext = ".xls")
       on.exit(unlink(temp_file))
       
       # Function to write XLSX file
@@ -236,10 +228,10 @@ shinyServer(function(input, output, session) {
       }
       
       # Write file of the selected to tempfile
-      if (input$fndFileFormat == "Excel") {
-        xlfun(tsdata(), temp_file)
+      if (input$ftsFileFormat == "Excel") {
+        xlfun(ftsData(), temp_file)
       } else {
-        write.csv(tsdata(), file = temp_file, row.names = FALSE)
+        write.csv(ftsData(), file = temp_file, row.names = FALSE)
       }
       
       # Read tempfile and return it to the user
