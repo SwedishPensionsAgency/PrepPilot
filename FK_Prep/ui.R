@@ -70,6 +70,233 @@ navbarPage(
   ),
   
   
+  ## Fondrörelsen ----
+  navbarMenu(
+    "Fondrörelsen",
+    
+    ## > Tidsserier ----
+    tabPanel(
+      "Tidsserier",
+      
+      # Text
+      fluidRow(
+        column(
+          10, offset = 1,
+          uiOutput("ftsText")
+        )
+      ),
+      
+      # Controls
+      fluidRow(
+        uiOutput("ftsControls")
+      ),
+      
+      # hr()
+      fluidRow(column(10, offset = 1, hr())),
+      
+      # Graph
+      fluidRow(
+        column(10, offset = 1, showOutput("ftsTimeSeries","nvd3"))
+      ),
+      
+      # Controls
+      fluidRow(
+        column(
+          10, offset = 1,
+          hr(),
+          sidebarPanel(
+            downloadButton("ftsDownloadData", "Ladda ned data"),
+            radioButtons("ftsFileFormat", "Filformat", c("CSV", "Excel"), selected = "CSV")
+          )
+        )
+      )
+    ),
+    
+    ## > Index ----
+    tabPanel(
+      "Indexserier",
+      
+      # Text
+      fluidRow(
+        column(
+          6, offset = 3,
+          h2("Indexserier", style="text-align: center;"),
+          tags$small(
+            p("Här visas värdeutvecklingen för fondrörelsen, dvs alla fonder inklusive Premiesparfonden och AP7 Såfa sedan systemets start 2000-12-13."),
+            p("Tidsviktad avkastning, TVA mäter avkastningen på en genomsnittlig krona som sattes in i premiepensionssystemet 2000-12-13. Premiepensionsindex kan jämföras med marknadsindex och enskilda fonders avkastning. Rabatten på fondavgiften, myndighetens avgift och arvsvinster är inte medräknade."),
+            p("Real avkastning = avkastning/inflation (KPI)", br(),
+              "Med årsavkastning menas genomsnittlig avkastning sedan start.")
+          ),
+          hr()
+        )
+      ),
+      
+      # Controls
+      fluidRow(
+        column(
+          2, offset = 3,
+          selectInput(
+            "ixVar",
+            "Visa tidsserie för",
+            choices = c(
+              # "Internränta" = "IRR",
+              # "Internränta (real)" = "IRRReal",
+              "Premiepensionsindex" = "PPINDEX",
+              "AP7-index" = "AP7INDEX"
+              # "Marknadsvärde, fondrörelsen" = "MVFondrorelse",
+              # "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
+            ),
+            selected = "IRR",
+            selectize = TRUE
+          ),
+          checkboxInput(
+            "ixYearly",
+            "Beräkna årsavkastning",
+            value = FALSE
+          )
+        ),
+        column(
+          2,
+          selectInput(
+            "ixRes",
+            "Upplösning för tidsserie",
+            choices = c(
+              "Dag" = 1,
+              "Vecka" = 7,
+              "Månad" = 30
+            ),
+            selected = 7,
+            selectize = TRUE
+          )
+        ),
+        column(
+          2,
+          dateInput(
+            "ixStartdate", "Välj tidsperiod", value = "2000-12-13",
+            min = "2000-12-13", max = "2014-04-30", weekstart = 1,
+            startview = "year",
+            language = "sv"
+          ),
+          dateInput(
+            "ixEnddate", "", value = "2014-04-30",
+            min = "2000-12-13", max = "2014-04-30", weekstart = 1,
+            startview = "year",
+            language = "sv"
+          )
+        )
+      ),
+      
+      # hr()
+      fluidRow(column(6, offset = 3, hr())),
+      
+      # Graph
+      fluidRow(
+        column(3),
+        column(6, showOutput("fndIndexSeries","nvd3")),
+        column(3)
+      )
+    ),
+    
+    ## > Värdeutveckling per kalenderår ----
+    tabPanel(
+      "Värdeutveckling per kalenderår",
+      
+      # Text
+      fluidRow(
+        column(3),
+        column(
+          6,
+          h2("Värdeutveckling i Premiepensionsindex på årsbasis", style="text-align: center;"),
+          p("Staplarna nedan visar utvecklingen i Premiepensionsindex per kalenderår."),
+          p("För musen över en stapel för att se värdet för ett givet år."),
+          hr()
+        ),
+        column(3)
+      ),
+      
+      # Controls
+      fluidRow(
+        column(
+          2, offset = 3,
+          selectInput(
+            "yrVar",
+            "Visa tidsserie för",
+            choices = c(
+              "Internränta" = "IRR",
+              "Internränta (real)" = "IRRReal",
+              "Premiepensionsindex" = "PPINDEX",
+              "AP7-index" = "AP7INDEX",
+              "Marknadsvärde, fondrörelsen" = "MVFondrorelse",
+              "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
+            ),
+            selected = "IRR",
+            selectize = TRUE
+          )
+        ),
+        column(
+          2,
+          checkboxInput(
+            "yrDiff",
+            "Visa årsdifferens",
+            value = TRUE
+          )
+        )
+      ),
+      
+      # hr()
+      fluidRow(column(6, offset = 3, hr())),
+      
+      # Graph
+      fluidRow(
+        column(3),
+        column(6, showOutput("fndYearlyGrowth","nvd3")),
+        column(3)
+      )
+    ),
+    
+    ## > Tabeller ----
+    tabPanel(
+      "Tabeller",
+      
+      # Text
+      fluidRow(
+        column(3),
+        column(
+          6,
+          h2("Fondtabeller", style="text-align: center;"),
+          p("tabellen visar fondstatistik för samtliga fonder. Du kan själv välja vilken information som ska visas i tabellen."),
+          p("Genom sökfunktionen kan du söka på namn på individuella fonder eller "),
+          hr()
+        ),
+        column(3)
+      ),
+      
+      # Controls
+      fluidRow(
+        column(
+          6, offset = 3,
+          selectInput(
+            "tblVars",
+            "Välj kolumner att visa i tabellen",
+            choices = names(dataFond),
+            selected = names(dataFond)[1:5],
+            # options = list(maximumSelectionSize = 6),
+            multiple = TRUE, selectize = TRUE
+          ),
+          hr()
+        )
+      ),
+      
+      # Tables
+      fluidRow(
+        column(
+          6, offset = 3,
+          dataTableOutput("ppTables")
+        )
+      )
+    )
+  ),
+  
   ## Antalsuppgifter ----
   navbarMenu(
     "Antalsuppgifter",

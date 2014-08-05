@@ -101,8 +101,280 @@ shinyServer(function(input, output, session) {
   )})
   
   
-  ## Antalsuppgifter ----
+  ## Fondrörelsen ----
+  
+  ## > Tidsserier ("fts") ----
+  ## > Tidsserier >> Data ----
+  ftsData <- reactive({    
+    data <- copy(ppindex) %>%
+      setnames(c("UPDEDT", input$tsVar), c("Datum","plotVar")) %>%
+      filter(!is.na(plotVar) & Datum >= input$tsStartdate & Datum <= input$tsEnddate) %>%
+      mutate(Week = week(Datum), Month = month(Datum), Year = year(Datum))
+    
+    #     if (input$tsVar %in% c("PPINDEX", "AP7INDEX")) {
+    #       data = realIndex(
+    #         data,
+    #         dateCol = "Datum",
+    #         indexCol = "plotVar",
+    #         CPICol = "KPI",
+    #         dateStart = input$tsStartdate, dateEnd = input$tsEnddate
+    #       )
+    #     }
+    
+    # Date filtering
+    if (input$tsRes == 7) {
+      data <- data %>%
+        group_by(Year, Week) %>%
+        filter(Datum == min(Datum))
+    }
+    if (input$tsRes == 30) {
+      data <- data %>%
+        group_by(Year, Month) %>%
+        filter(Datum == max(Datum))
+    }    
+    
+    return(data)
+  })
+  
+  ## > Tidsserier >> Text ----
+  output$ftsText <- renderUI({tagList(
+    h2("Tidsserier", style="text-align: center;"),
+    tags$small(p("Grafen visar den historiska utvecklingen för valt index
+                       på dagsbasis mellan 2000-12-13 och 2014-03-20. Index=100 är bestämt
+                       tid tidpunkten ", em("t "), "= 2000-12-13."),
+               p("För musen över grafen för att se värdet för en enskild punkt i grafen.")),
+    hr()
+  )})
+  
+  ## > Tidsserier >> Controls ----
+  output$ftsControls <- renderUI({tagList(
+    column(
+      2, offset = 1,
+      selectInput(
+        "tsVar",
+        "Visa tidsserie för",
+        choices = c(
+          "Internränta" = "IRR",
+          "Internränta (real)" = "IRRReal",
+          "Premiepensionsindex" = "PPINDEX",
+          "AP7-index" = "AP7INDEX",
+          "Marknadsvärde, fondrörelsen" = "MVFondrorelse",
+          "Anskaffningsvärde" = "ANSKAFFNINGSVARDE"
+        ),
+        selected = "IRR",
+        selectize = TRUE
+      )
+    ),
+    column(
+      2,
+      selectInput(
+        "tsRes",
+        "Upplösning för tidsserie",
+        choices = c(
+          "Dag" = 1,
+          "Vecka" = 7,
+          "Månad" = 30
+        ),
+        selected = 30,
+        selectize = TRUE
+      )
+    ),
+    column(
+      2,
+      dateInput(
+        "tsStartdate", "Välj tidsperiod", value = "2000-12-13",
+        min = "2000-12-13", max = "2014-04-30", weekstart = 1,
+        startview = "year",
+        language = "sv"
+      ),
+      dateInput(
+        "tsEnddate", "", value = "2014-04-30",
+        min = "2000-12-13", max = "2014-04-30", weekstart = 1,
+        startview = "year",
+        language = "sv"
+      )
+    )
+  )})
+  
+  ## > Tidsserier >> Chart ----
+  output$ftsChart <- renderChart2({
+    # Get data
+    plotdata <- tsdata()
+    
+    # Define plot
+    pr1 <- nPlot(y="plotVar", x="Datum", data = plotdata, type = "lineChart")
+    pr1$xAxis(
+      tickFormat = "#!function(d) {return d3.time.format('%Y-%m-%d')(new Date(d * 24 * 60 * 60 * 1000));}!#"
+    )
+    
+    
+    return(pr1)
+  })
+  
+  ## > Tidsserier >> Download handler ----
+  output$ftsDownloadHandler <- downloadHandler(
+    filename = function() {
+      paste('fonddata-', Sys.Date(), '.csv', sep='')
+    },
+    content = function(con) {
+      temp_file <- paste0(tempfile(),".xlsx")
+      on.exit(unlink(temp_file))
+      
+      # Function to write XLSX file
+      xlfun <- function(input, output) {
+        # Error handling
+        if(!require(XLConnect)) {
+          warning("Could not find package 'XLConnect'. Exporting data to CSV instead of XLS. Please run install.packages('XLConnect') to enable export to XLS.")
+          
+          write.csv(input, file = output, row.names = FALSE)
+        } else {
+          wb <- loadWorkbook(output, create = TRUE)
+          createSheet(wb, name = "output")
+          writeWorksheet(wb, input, sheet = "output")
+          saveWorkbook(wb)
+        }
+      }
+      
+      # Write file of the selected to tempfile
+      if (input$fndFileFormat == "Excel") {
+        xlfun(tsdata(), temp_file)
+      } else {
+        write.csv(tsdata(), file = temp_file, row.names = FALSE)
+      }
+      
+      # Read tempfile and return it to the user
+      bytes <- readBin(temp_file, "raw", file.info(temp_file)$size)
+      writeBin(bytes, con)
+    }
+  )
+  
+  ## > Index ("fix") ----
+  ## > Index >> Data ----
+  fixData <- reactive({    
+    data <- copy(ppindex) %>%
+      setnames(c("UPDEDT", input$ixVar), c("Datum","plotVar")) %>%
+      filter(!is.na(plotVar) & Datum >= input$ixStartdate & Datum <= input$ixEnddate) %>%
+      mutate(Week = week(Datum), Month = month(Datum), Year = year(Datum))
+    
+    if (input$ixYearly) {
+      data = realIndexYearlyRate(
+        data,
+        dateCol = "Datum",
+        indexCol = "plotVar",
+        CPICol = "KPI",
+        dateStart = input$ixStartdate, dateEnd = input$ixEnddate
+      )
+    } else {
+      data = realIndex(
+        data,
+        dateCol = "Datum",
+        indexCol = "plotVar",
+        CPICol = "KPI",
+        dateStart = input$ixStartdate, dateEnd = input$ixEnddate
+      )
+    }
+    
+    # Date filtering
+    if (input$ixRes == 7) {
+      data <- data %>%
+        group_by(Year, Week) %>%
+        filter(Datum == min(Datum))
+    }
+    if (input$ixRes == 30) {
+      data <- data %>%
+        group_by(Year, Month) %>%
+        filter(Datum == max(Datum))
+    }    
+    
+    return(data)
+  })
+  
+  
+  ## > Index >> Chart ----
+  output$fixIndexSeries <- renderChart2({
+    # Get data
+    plotdata <- fixData()
+    # print(plotdata)
+    
+    # Define plot
+    if (input$ixYearly) {
+      pr1 <- nPlot(y="YEARLY", x="Datum", data = plotdata, type = "lineChart")
+    } else {
+      pr1 <- nPlot(y="plotVar", x="Datum", data = plotdata, type = "lineChart")
+    }
+    
+    pr1$xAxis(
+      tickFormat = "#!function(d) {return d3.time.format('%Y-%m-%d')(new Date(d * 24 * 60 * 60 * 1000));}!#"
+    )
+    
+    return(pr1)
+  })
+  
+  
+  ## > Värdeutveckling per kalenderår ----
+  # Reactive function to get yearly data
+  yrdata <- reactive({    
+    data <- copy(ppindex) %>%
+      setnames(c("UPDEDT", input$yrVar), c("Datum","plotVar")) %>%
+      # Select only relevant variables
+      select(Datum, plotVar) %>%
+      # Remove NAs
+      filter(!is.na(plotVar)) %>%
+      # Find timestamps
+      mutate(Year = year(Datum)) %>%
+      # Year 2000 and 2014 are incomplete so we exclude them
+      filter(Year > 2000 & Year < 2014) %>%
+      # Keep only first and last observation of the year
+      group_by(Year) %>%
+      filter(Datum %in% c(min(Datum), max(Datum)))
+    
+    if (input$yrDiff) {
+      data <- data %>%
+        # Calculate fund development and discard unneccessary rows
+        mutate(growth = plotVar / lag(plotVar, 1, default = plotVar[1]) - 1) %>%
+        filter(Datum == max(Datum))
+    } else {
+      data <- data %>%
+        mutate(growth = plotVar) %>%
+        filter(Datum == max(Datum))
+    }
+  })
+  
+  # Render plot
+  output$fndYearlyGrowth <- renderChart2({
+    # Get data
+    plotdata <- yrdata()
+    # print(plotdata)
+    
+    # Define plot
+    pr2 <- nPlot(growth ~ Year, data = plotdata, type = "multiBarChart")
+    pr2$yAxis(axisLabel = "\u00C5rlig tillv\u00E5xt", width = 62)
+    pr2$xAxis(axisLabel = "\u00C5r")
+    
+    return(pr2)
+  })
+  
+  ## > Tabeller ----
+  
+  tblData <- reactive({
+    dataFond[,input$tblVars, with = FALSE]
+  })
+  
+  output$ppTables <- renderDataTable({
+    ## TODO: Fyll i här!
+    tbldata()
+  },
+  options = list(
+    aLengthMenu = list(c(5, 10, 20, -1), c('5', '10', '20', 'All')),
+    bSortClasses = TRUE,
+    iDisplayLength = 10,
+    bFilter = list(
+      caseInsensitive = TRUE
+    )
+  ))
 
+  ## Antalsuppgifter ----
+  
   ## > Antal pensionssparare ("pps") ----
   ## > Antal pensionssparare >> Data ----
   ppsData <- reactive({

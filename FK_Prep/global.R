@@ -44,6 +44,7 @@ geoTblRegion <- read.csv("Data/coordinate_Region.csv", head = TRUE, sep = ";")
 # fondDB <- cdb("Data//FNDDB")
 # save(fondDB, file = "Data//Fonddata.DB")
 load("Data//Fonddata.DB")
+load("Data//dataFond.RData")
 
 fnd_data <- tbl_df(data.frame(
   FNDID = fondDB['FNDID'][[1]],
