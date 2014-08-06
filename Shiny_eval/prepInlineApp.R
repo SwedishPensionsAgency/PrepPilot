@@ -1,18 +1,9 @@
 prepInlineApp <- function() {
   
   require(Coldbir)
-  individDB <- cdb("..//Prep//Data//DataBas")
-  
-  base_data <- data.table(
-    individDB['FODAR'],
-    individDB['FONDPLACERINGSAR'],
-    individDB['INTJANANDEAR'],
-    individDB['INTRADESAR'],
-    individDB['SEX']
-  )
-  
-  birthYears <- sort(unique(base_data$FODAR))
-  entryYears <- sort(unique(base_data$INTJANANDEAR))
+  individDB <- cdb("..//FK_Prep//Data//DB2014_04")
+  # load("/Users/love/dev/PrepPilot/FK_Prep/Data/Individdata.DB")
+  # print(getwd())
   
   shinyApp(
     ui = fluidPage(
@@ -29,56 +20,55 @@ prepInlineApp <- function() {
       fluidRow(plotOutput("distPlot")),
       
       # Controls
-      fluidRow(column(3,
-                      selectInput(
-                        "variable",
-                        "Variabel (y-axel)",
-                        choices = c(
-                          "Internränta" = "IRR",
-                          "Kontovärde" = "KONTOVARDE",
-                          "Garanterat belopp" = "GARANTBLP",
-                          "Månatligt belopp" = "MONAMT"
-                        ),
-                        selected = "IRR",
-                        selectize = TRUE
-                      )
-      ),
-      column(3,
-             sliderInput(
-               "bins",
-               "Upplösning (x-axel)",
-               # Formatting
-               min = 1, max = 11, step = 1, format = "##", locale = "se",
-               ticks = FALSE, animate = TRUE,
-               # Initial value
-               value = 2
-             )
-      ),
-      column(3,
-             sliderInput(
-               "year",
-               "År",
-               # Formatting
-               min = 2000, max = 2013, step = 1, format = "####", locale = "se",
-               ticks = FALSE, animate = TRUE,
-               # Initial value
-               value = 2008
-             )
-      )
+      fluidRow(
+        column(3,
+               selectInput(
+                 "variable",
+                 "Variabel (y-axel)",
+                 choices = c(
+                   "Internränta" = "IRR",
+                   "Kontovärde" = "Kontovarde",
+                   "Månatligt belopp" = "Monamt"
+                 ),
+                 selected = "IRR",
+                 selectize = TRUE
+               )
+        ),
+        column(3,
+               sliderInput(
+                 "bins",
+                 "Upplösning (x-axel)",
+                 # Formatting
+                 min = 1, max = 11, step = 1, format = "##", locale = "se",
+                 ticks = FALSE, animate = TRUE,
+                 # Initial value
+                 value = 2
+               )
+        ),
+        column(3,
+               sliderInput(
+                 "year",
+                 "År",
+                 # Formatting
+                 min = 2000, max = 2013, step = 1, format = "####", locale = "se",
+                 ticks = FALSE, animate = TRUE,
+                 # Initial value
+                 value = 2008
+               )
+        )
       )
     ),
     
     server = function(input, output) {
-      distData <- reactive({
-        data <- individDB[input$variable, input$year][[1]]
+      ktoData <- reactive({
+        data <- individDB[input$variable, c(input$year, 12)][[1]]
         data <- data[!is.na(data)]
-        
         return(data)
       })
       
       # Plot function
       output$distPlot <- renderPlot({
-        x <- distData()
+        x <- ktoData()
         x <- x[x < quantile(x, 0.99) & x > quantile(x, 0.01)] #Trim off outlier data
         
         bins <- seq(min(x), max(x),
