@@ -263,15 +263,9 @@ navbarPage(
       ),
       ## More content
       fluidRow(
-        column(
-          5, offset = 1
-        ),
-        column(
-          5
-        )
-      ),
-      
-      column(1)
+        column(5, offset = 1),
+        column(5)
+      )
     ),
     
     

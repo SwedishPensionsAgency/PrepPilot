@@ -649,15 +649,16 @@ shinyServer(function(input, output, session) {
     map <- createLeafletMap(session, 'map')
     map$clearShapes()
     
+    print(sqrt(data$freq) *800 / max(5, input$map_zoom)^2)
 #     browser()
 
     for(i in 1:nrow(geoData())){
       map$addCircle(
-        data$lat[i],
-        data$long[i],
-        sqrt(data$freq[i]) *800 / max(5, input$map_zoom)^2,
-        data$regionText[i],
-        list(stroke=FALSE, fill=TRUE, fillOpacity=0.4, color='#FF0000')
+        lat = data$lat,
+        lng = data$long,
+        radius = sqrt(data$freq) *800 / max(5, input$map_zoom)^2,
+        layerId = "Stockholm",
+        options = list(stroke=TRUE, fill=TRUE, fillOpacity=1, color='#FF0000')
       )
     }
     
