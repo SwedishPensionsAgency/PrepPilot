@@ -12,15 +12,15 @@ require(ggplot2)
 require(sparkle) # install_github("metagraf/sparkle")
 require(rCharts) # install_github("ramnathv/rCharts", ref="dev")
 require(plyr)
-require(dplyr)
+require(dplyr) # install_github("hadley/dplyr")
 require(tidyr)
 require(ggthemes)
 require(XLConnect)
-require(pmreports) # install_stash("pmreports")
+#require(pmreports) # install_stash("pmreports")
 require(stringr)
 require(googleVis)
 #require(maptools)
-require(leaflet)
+require(leaflet) # install_github("jcheng5/leaflet-shiny")
 
 ## Data ----
 

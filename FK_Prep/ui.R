@@ -10,11 +10,11 @@ navbarPage(
   # If we want, we could add code here that would be displayed on all the pages.
   # This could be useful for e.g. providing a logo beneath the menu, a 
   # copyright footer or other nice CI elements.
-  #   header = tagList(
-  #                   uiOutput("ribbon"), 
-  #                   column(width = 1, offset = 1,div(id = "logo", img(src="img/PM_Logo_neg_farg_150mm150dpi.png", width = 80, height = 50))),
-  #                   hr()
-  #           ),
+#     header = tagList(
+#                     uiOutput("ribbon"), 
+#                     column(width = 1, offset = 1,div(id = "logo", img(src="img/PM_Logo_neg_farg_150mm150dpi.png", width = 80, height = 50))),
+#                     hr()
+#             ),
   footer = tagList(
     column(10, offset = 1, p(tags$small("Denna applikation är en prototyp utvecklad av Pensionsmyndigheten och är för närvarande under utveckling. Det finns ingen garanti för att uppgifterna i applikationen är tillförlitliga då dessa inte genomgått kvalitetssäkring och delvis bygger på fabricerad data.", style = "color: Grey;")))
   ),
@@ -27,7 +27,7 @@ navbarPage(
     fluidRow(
       column(
         10, offset = 1,
-        h2("Premiepensionsportalen: FK-rapporterna", style = "text-align: center;"),
+        h2("Premiepensionsportalen", style = "text-align: center;"),
         p("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
       )
     )
@@ -354,8 +354,8 @@ navbarPage(
   
   singleton(
     tags$head(
-      #tags$link(rel="stylesheet", type="text/css", href="css/site.css")
-     tags$link(rel="stylesheet", type="text/css", href="css/ribbon.css")
+      tags$link(rel="stylesheet", type="text/css", href="css/site.css")
+    , tags$link(rel="stylesheet", type="text/css", href="css/ribbon.css")
     , tags$link(rel="stylesheet", type="text/css", href="css/dataTable.css")
     ))
 )
