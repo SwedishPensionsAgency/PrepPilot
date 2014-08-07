@@ -1,5 +1,6 @@
 prepInlineApp <- function() {
   
+  require(shiny)
   require(Coldbir)
   individDB <- cdb("..//FK_Prep//Data//DB2014_04")
   # load("/Users/love/dev/PrepPilot/FK_Prep/Data/Individdata.DB")
@@ -7,12 +8,12 @@ prepInlineApp <- function() {
   
   shinyApp(
     ui = fluidPage(
-      fluidRow(h2("Fördelning av några variabler", style = "text-align: center;"),
-               p("Grafen nedan visar fördelningen av vald variabel i ett histogram 
-               längs x-axeln. ", em("Stapelbredden" ), "redovisas i diagramtexten. ",
-                 em("Stapelhöjden "), "återspeglar antal personer i varje kategori."),
-               p("Genom att förändra reglagevärdena kan olika variabler utforskas
-               för olika tidpunkt och olika upplösning."),
+      fluidRow(h2("F\u00f6rdelning av n\u00e5gra variabler", style = "text-align: center;"),
+               p("Grafen nedan visar f\u00f6rdelningen av vald variabel i ett histogram 
+               l\u00e4ngs x-axeln. ", em("Stapelbredden" ), "redovisas i diagramtexten. ",
+                 em("Stapelh\u00f6jden "), "\u00e5terspeglar antal personer i varje kategori."),
+               p("Genom att f\u00f6r\u00e4ndra reglagev\u00e4rdena kan olika variabler utforskas
+               f\u00f6r olika tidpunkt och olika uppl\u00f6sning."),
                hr()
       ),
       
@@ -26,9 +27,9 @@ prepInlineApp <- function() {
                  "variable",
                  "Variabel (y-axel)",
                  choices = c(
-                   "Internränta" = "IRR",
-                   "Kontovärde" = "Kontovarde",
-                   "Månatligt belopp" = "Monamt"
+                   "Internr\u00e4nta" = "IRR",
+                   "Kontov\u00e4rde" = "Kontovarde",
+                   "M\u00e5natligt belopp" = "Monamt"
                  ),
                  selected = "IRR",
                  selectize = TRUE
@@ -37,7 +38,7 @@ prepInlineApp <- function() {
         column(3,
                sliderInput(
                  "bins",
-                 "Upplösning (x-axel)",
+                 "Uppl\u00f6sning (x-axel)",
                  # Formatting
                  min = 1, max = 11, step = 1, format = "##", locale = "se",
                  ticks = FALSE, animate = TRUE,
@@ -48,7 +49,7 @@ prepInlineApp <- function() {
         column(3,
                sliderInput(
                  "year",
-                 "År",
+                 "\u00e5r",
                  # Formatting
                  min = 2000, max = 2013, step = 1, format = "####", locale = "se",
                  ticks = FALSE, animate = TRUE,
