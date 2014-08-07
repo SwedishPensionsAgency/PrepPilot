@@ -204,6 +204,43 @@ navbarPage(
   navbarMenu(
     "Antalsuppgifter",
     
+    ## > Fondval ----
+    tabPanel(
+      "Fondval",
+      
+      ## Controls
+      fluidRow(
+        column(
+          5, offset = 1,
+          uiOutput("fvlControls")
+        ),
+        column(
+          5,
+          uiOutput("fvlAdditionalControls")
+        )
+      ),
+      
+      hr(),
+      
+      ## Content
+      fluidRow(
+        column(
+          10, offset = 1,
+          dataTableOutput("fvlTable")
+        )
+      ),
+      
+      ## More content
+      fluidRow(
+        column(
+          5, offset = 1
+        ),
+        column(
+          5
+        )
+      )
+    ),
+    
     ## > Antal pensionssparare ----
     tabPanel(
       "Antal pensionssparare",
@@ -261,44 +298,6 @@ navbarPage(
       fluidRow(
         column(5, offset = 1),
         column(5)
-      )
-    ),
-    
-    
-    ## > Fondval ----
-    tabPanel(
-      "Fondval",
-      
-      ## Controls
-      fluidRow(
-        column(
-          5, offset = 1,
-          uiOutput("fvlControls")
-        ),
-        column(
-          5,
-          uiOutput("fvlAdditionalControls")
-        )
-      ),
-      
-      hr(),
-      
-      ## Content
-      fluidRow(
-        column(
-          10, offset = 1,
-          dataTableOutput("fvlTable")
-        )
-      ),
-      
-      ## More content
-      fluidRow(
-        column(
-          5, offset = 1
-        ),
-        column(
-          5
-        )
       )
     )
   ),
