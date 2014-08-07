@@ -28,7 +28,7 @@ Många användningsområden:
 - Presentationer med live-data, interaktiv grafik m.m.
 - Generera PDF, Word-dokument, webbsidor m.m.
 
-<iframe src="http://spark.rstudio.com/trestletech/globePopulation/" height="200" width = "600"></iframe>
+<iframe src="http://spark.rstudio.com/trestletech/globePopulation/" height='200' width = '200'></iframe>
 
 
 ## {.flexbox .vcenter}
@@ -89,15 +89,14 @@ Interaktiv grafik i presentationer och rapporter kräver en R-serversession för
 ## En frontend för R
 
 - I grunden är Shiny en metod för att hämta data och grafik från en R-session och visa den för en slutanvändare i ett webbrowservänligt format
-- Det betyder att _allt som kan göras i R_ kan integreras med Shiny
+- Det betyder att _allt som kan göras i R_ kan visas med Shiny
 - Resultat kan även användas för att generera rapporter, publikationer, presentationer (som denna)
 
 
 ## R och JavaScript
 
-Shiny är en plattform för frontend-kodning som baseras på JavaScript-generering från R-kod.
-Detta innebär att en R-programmerare med lätthet kan utnyttja styrkan i flera kraftfulla .js-bibliotek som t.ex. DataTables, D3.js, Leaflet, ioSlides m.fl.
-JavaScript-programmerare kan lätt skriva egna plugins för Shiny med minimal R-kod.
+- Shiny är en plattform för frontend-kodning som baseras på JavaScript-generering från R-kod. Detta innebär att en R-programmerare med lätthet kan utnyttja styrkan i flera kraftfulla .js-bibliotek som t.ex. DataTables, D3.js, Leaflet, ioSlides m.fl.
+- JavaScript-programmerare kan lätt skriva egna plugins för Shiny med minimal R-kod.
 
 <div class="columns-2">
 ![](img/ex_DataTables.png)
@@ -176,8 +175,8 @@ shinyApp(
 ## Det är lätt att återanvända kod
 
 ```{r, echo=FALSE, message=FALSE}
-#source("prepInlineApp.R")
-#prepInlineApp()
+source("prepInlineApp.R")
+prepInlineApp()
 ```
 
 
