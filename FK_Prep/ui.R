@@ -62,11 +62,7 @@ navbarPage(
       fluidRow(
         uiOutput("ktoControls")
       )
-    ),
-    
-    
-    ## > Tabeller ----
-    tabPanel("Tabeller")
+    )
   ),
   
   
@@ -198,7 +194,7 @@ navbarPage(
       fluidRow(
         column(
           6, offset = 3,
-          dataTableOutput("ppTables")
+          dataTableOutput("tblTable")
         )
       )
     )
@@ -303,54 +299,17 @@ navbarPage(
         column(
           5
         )
-      ),
-      
-      column(1)
-    ),
-
-    
-    ## > Dolor ----
-    tabPanel(
-      "Dolor",
-      
-      column(1),
-      
-      fluidRow("Test"),
-      
-      column(1)
-    ),
-    
-    tabPanel(
-      "Sit",
-      
-      column(1),
-      
-      ## > Sit ----
-      fluidRow("Test"),
-      
-      column(1)
-    ),
-    
-    tabPanel(
-      "Amet",
-      
-      column(1),
-      
-      ## > Amet ----
-      fluidRow("Amet"),
-      
-      column(1)
+      )
     )
   ),
   
-  
   ## Om Applikationen ----
-  navbarMenu(
-    "Om applikationen",
-    tabPanel("Data"),
-    tabPanel("Licens"),
-    tabPanel("Källkod")
-  ),
+  #   navbarMenu(
+  #     "Om applikationen",
+  #     tabPanel("Data"),
+  #     tabPanel("Licens"),
+  #     tabPanel("Källkod")
+  #   ),
   
   singleton(
     tags$head(
