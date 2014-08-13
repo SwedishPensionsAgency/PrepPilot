@@ -38,7 +38,7 @@ Många användningsområden:
 
 ## Ett ramverk, inte en app
 
-Shiny är ett _ramverk_, inte en _app_.
+Först en grundläggande typologisk förklaring: Shiny är ett _ramverk_, inte en _app_.
 
 <br/>
 
@@ -62,7 +62,7 @@ Shiny är ett _ramverk_, inte en _app_.
 
 ## Styrkor med en programmeringsapproach
 
-En programmerare har mycket lätt att komma igång med Shiny. Flera dataförädlare och utvecklare på avdelningen har redan börjat använda ramverket för att lösa mindre uppgifter.
+En programmerare har mycket lätt att komma igång med Shiny. Några dataförädlare och utvecklare på avdelningen har redan börjat använda ramverket för att lösa mindre uppgifter.
 
 Shiny är ett ramverk som gör det lätt att skriva elegant och funktionell kod. Det är exceptionellt väldokumenterat och har talrika exempel och guider. Det gör att det går mycket snabbt att både komma igång och lära sig mer.
 
@@ -73,11 +73,11 @@ Shiny är en attraktiv metod för att komma igång med webbaserad programmering,
 
 Ett verktyg som Excel eller Tableau gör det svårt för användaren att göra "fel". Allt som produceras i sådana verktyg ser ungefär likadant ut och bär omisskänliga visuella spår från det verktyg de producerats med.
 
-Shiny gör det lätt att göra fel. Det ställer betydligt högre krav på kompetens i t.ex. design och visuell kommunikation.
+Shiny gör det lätt att göra fel. Det ställer betydligt högre krav på kompetens inom t.ex. design och visuell kommunikation.
 
-En WYSIWYG-approach gör det möjligt att bara "sätta igång" med t.ex. en presentation eller liknande, medan en kodbaserad approach kräver ett visst mått av abstraktion.
+En WYSIWYG-approach gör det möjligt att bara "sätta igång" med t.ex. en presentation eller liknande, medan en kodbaserad approach kräver ett visst mått av abstraktionsförmåga.
 
-Interaktiv grafik i presentationer och rapporter kräver en R-serversession för att fungera. Det gör att portabiliteten i Shiny-produkter i vissa specialfall är beroende av en fungerandeinternetuppkoppling.
+Interaktiv grafik i presentationer och rapporter kräver en R-serversession för att fungera. Det gör att portabiliteten i Shiny-produkter i vissa särskilda fall är beroende av en fungerande internetuppkoppling.
 
 
 
@@ -95,7 +95,7 @@ Interaktiv grafik i presentationer och rapporter kräver en R-serversession för
 
 ## R och JavaScript
 
-- Shiny är en plattform för frontend-kodning som baseras på JavaScript-generering från R-kod. Detta innebär att en R-programmerare med lätthet kan utnyttja styrkan i flera kraftfulla .js-bibliotek som t.ex. DataTables, D3.js, Leaflet, ioSlides m.fl.
+- Shiny är en plattform för frontend-kodning som bygger på att metoder i R används för att skapa en JavaScript- och HTML5-baserad slutprodukt. Detta innebär att en R-programmerare med lätthet kan utnyttja styrkan i flera kraftfulla .js-bibliotek som t.ex. DataTables, D3.js, Leaflet, ioSlides m.fl.
 - JavaScript-programmerare kan lätt skriva egna plugins för Shiny med minimal R-kod.
 
 <div class="columns-2">
@@ -191,7 +191,7 @@ summary(cars)
 
 ## Ytterligare funktionalitet i urval
 
-Inbyggd debugger och visningsläge som visar vilken kod som körs när gör utveckling och felsökning lätt och roligt
+Inbyggd debugger, och visningsläge som visar vilken kod som körs vid en viss tidpunkt, gör utveckling och felsökning lätt och roligt.
 
 ![](img/ex_shinyhighlight.png)
 
@@ -199,7 +199,7 @@ Inbyggd debugger och visningsläge som visar vilken kod som körs när gör utve
 ## Väldokumenterad plattform
 
 - Shiny är open source och utvecklas av RStudio. Plattformen är exceptionellt väldokumenterad.
-- Dokumentationen innefattar såväl en välstädad API-dokumentation som lathundar och en effektiv tutorial, m.m.
+- Dokumentationen innefattar såväl en välstädad API-dokumentation som lathundar och en bra tutorial, m.m.
 - StackOverflow och Google Groups är välförsedda med lösningar på vanliga programmeringsproblem för Shiny.
 
 
@@ -208,7 +208,7 @@ Inbyggd debugger och visningsläge som visar vilken kod som körs när gör utve
 Produktionssättning av interaktiva Shiny-produkter kan ske på flera sätt:
 
 - Publicering på online-tjänster
-- Körning direkt i R (kräver R installerat)
+- Körning direkt i R (kräver att R är installerat lokalt)
 - Egen lösning med produkten Shiny Server, lokalt eller som molntjänst
 
 
@@ -216,10 +216,18 @@ Produktionssättning av interaktiva Shiny-produkter kan ske på flera sätt:
 
 Säkerhet i Shiny är bara så bra som säkerheten i åtkomsten till det system där Shiny körs.
 
-För att säkra åtkomst finns flera autenticeringslösningar inbyggda i Shiny Server:
+För att säkra åtkomst finns flera autentiseringslösningar inbyggda i Shiny Server:
 
 - LDAP (används av Pensionsmyndigheten)
 - Google-konto
 - etc.
 
+
+## Utblick
+
+Eftersom det går att köra Shiny-baserade applikationer lokalt genom R, kan vi redan idag använda Shiny för att utveckla ad hoc-rapporter som t.ex. denna presentation, skräddarsydda statistikrapporter eller liknande.
+
+Det vi saknar är en driftsättningsplattform för kontinuerlig drift, men en sådan kan både ta formen av en molntjänst eller en in house-miljö.
+
+Shiny utvecklas snabbt, och många nya features kan förväntas inom en nära framtid. Det bör dock understrykas att ramverket redan i sin nuvarande utformning är lättanvänt, elegant och förhållandevis stabilt.
 
