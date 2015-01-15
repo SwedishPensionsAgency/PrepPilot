@@ -1,0 +1,4 @@
+1	PensionarEgen
+2	PensionarOvertagen
+3	SparareEgen
+4	SparareOvertagen
